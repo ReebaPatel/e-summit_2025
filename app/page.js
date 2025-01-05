@@ -7,7 +7,7 @@ import Sponsors from "@/components/Sponsors";
 
 export default function Home() {
   return (
-    <main className="bg-[url('/bg-image.webp')] bg-fixed bg-cover bg-center">
+    <main className="bg-[url('/bg-image.svg')] bg-fixed bg-cover bg-center">
       <Navbar />
       <Hero />
       <About />
