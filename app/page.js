@@ -9,11 +9,13 @@ export default function Home() {
   return (
     <main className="bg-[url('/bg-image.svg')] bg-fixed bg-cover bg-center">
       <Navbar />
-      <Hero />
-      <About />
-      <Events />
-      <Sponsors />
-      <Footer />
+      <div className="space-y-24">
+        <Hero />
+        <About />
+        <Events />
+        <Sponsors />
+        <Footer />
+      </div>
     </main>
   );
 }
