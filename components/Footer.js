@@ -28,7 +28,7 @@ const Footer = () => {
   ];
 
   return (
-    <footer class="text-[#B0B0B0]">
+    <footer className="text-[#B0B0B0]">
       <div className="flex flex-wrap items-center justify-between mx-20">
         <div className="space-y-[38px] w-1/3">
           <div className="inter-800 text-[25.11px] leading-[30.38px]">

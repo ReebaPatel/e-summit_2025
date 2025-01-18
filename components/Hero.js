@@ -2,7 +2,7 @@ import HeroCard from "./HeroCard";
 
 const Hero = () => {
   return (
-    <section className="h-screen relative">
+    <section className="min-h-screen relative">
       <h1 className="text-center shadow-[0px_4px_4px_0px_#00000040] bg-gradient-to-b from-[#F24181] to-[#000000] text-transparent bg-clip-text leading-none">
         <span className="md:text-[250px] marck-script-regular">E</span>
         <span className="squada-one-regular md:text-[200px]">
