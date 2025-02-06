@@ -6,32 +6,32 @@ export function AnimatedPinDemo() {
   // Card data array
   const cards = [
     {
-      title: "Aceternity UI",
+      title: "To be announced",
       description: "Customizable Tailwind CSS Components.",
       image: "/images/card4.jpg",
     },
     {
-      title: "Next.js Guide",
+      title: "To be announced",
       description: "Learn Next.js with ease.",
       image: "/images/card4.jpg",
     },
     {
-      title: "Framer Motion",
+      title: "To be announced",
       description: "Animate like a pro!",
       image: "/images/card4.jpg",
     },
     {
-      title: "UI/UX Design",
+      title: "To be announced",
       description: "Enhance your user experience.",
       image: "/images/card4.jpg",
     },
     {
-      title: "React Best Practices",
+      title: "To be announced",
       description: "Write clean and efficient React code.",
       image: "/images/card5.jpg",
     },
     {
-      title: "Web Animations",
+      title: "To be announced",
       description: "Make your website come alive!",
       image: "/images/card6.jpg",
     },

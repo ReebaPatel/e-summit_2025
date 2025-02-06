@@ -24,20 +24,17 @@ export default function RootLayout({ children }) {
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
         {/* Background Video */}
-      <video
-        autoPlay
-        loop
-        muted
-        className="fixed top-0 left-0 w-full h-full object-cover -z-10"
-        style={{ opacity: 0.4 }}
-      >
-        <source src="/hero.mp4" type="video/mp4" />
-        Your browser does not support the video tag.
-      </video>
-      <div className="relative">{children}
-
-      </div>
-        
+        <video
+          autoPlay
+          loop
+          muted
+          className="fixed top-0 left-0 w-full h-full object-cover -z-10"
+          style={{ opacity: 0.4 }}
+        >
+          <source src="/hero.mp4" type="video/mp4" />
+          Your browser does not support the video tag.
+        </video>
+        <div className="relative overflow-hidden">{children}</div>
       </body>
     </html>
   );
