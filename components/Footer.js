@@ -1,75 +1,88 @@
-import Image from "next/image";
+"use client";
+import React from 'react';
+import {  Instagram, Twitter, Linkedin, } from 'lucide-react';
+import { useInView } from 'react-intersection-observer';
 
 const Footer = () => {
-  const links = [
-    {
-      heading: "Company",
-      links: [
-        { name: "About Us", href: "#about" },
-        { name: "Careers", href: "#careers" },
-        { name: "Contact", href: "#contact" },
-      ],
-    },
-    {
-      heading: "Resources",
-      links: [
-        { name: "Newsletter", href: "#newsletter" },
-        { name: "E-book", href: "#ebook" },
-      ],
-    },
-    {
-      heading: "Legal",
-      links: [
-        { name: "Press", href: "#press" },
-        { name: "Privacy", href: "#privacy" },
-        { name: "Contact", href: "#contact" },
-      ],
-    },
-  ];
+  const { ref, inView } = useInView({
+    triggerOnce: false,
+    threshold: 0.1,
+  });
 
   return (
-    <footer className="text-[#B0B0B0]">
-      <div className="flex flex-wrap items-center justify-between mx-20">
-        <div className="space-y-[38px] w-1/3">
-          <div className="inter-800 text-[25.11px] leading-[30.38px]">
-            E-Summit&apos;25
+    <footer 
+      ref={ref}
+      className={`
+        bg-gradient-to-br from-purple-500/80 via-purple-700/90 to-purple-900/95 
+        text-white p-10 transition-all duration-1000 ease-in-out
+        ${inView 
+          ? 'opacity-100 translate-y-0' 
+          : 'opacity-0 translate-y-10'
+        }
+      `}
+    >
+      <div className="container mx-auto grid grid-cols-1 md:grid-cols-3 gap-8">
+        {/* About Section */}
+        <div>
+          <div className="flex items-center gap-4 mb-4">
+            <img 
+              src="/e-cell-logo.svg" 
+              alt="E-Cell Logo" 
+              className="w-16 h-16"
+            />
           </div>
-          <div className="inter-400 text-[20px] leading-[28.87px]">
-            Unraveling the mysteries of my life, where we break down the
-            incredible journeys of designing and coding.
+          <p className="text-sm leading-relaxed">
+            E-Cell FCRIT aims to induce an entrepreneurial mindset into the students and air an innovative streak in them. We are here to water the 'Ideas' in the bud and help them bloom into impactful endeavors through networking student enterprises from campus to incubators, seeding funds and angel investors to transform the newly proposed ideas into successful start-ups.
+          </p>
+          <button className="mt-4 bg-white text-purple-600 px-4 py-2 rounded-lg hover:bg-purple-100 transition">
+            Email Us
+          </button>
+        </div>
+
+        {/* Quick Links */}
+        <div>
+          <h6 className="text-lg font-semibold mb-4">QUICK LINKS</h6>
+          <div className="space-y-2">
+            {/* Add quick links if needed */}
           </div>
         </div>
-        <div className="flex w-2/3 justify-evenly">
-          {links.map((link) => (
-            <div key={link.heading} className="space-y-[19.24px]">
-              <div className="inter-600 text-[20px] leading-[24.06px]">
-                {link.heading}
-              </div>
-              <div className="space-y-[14.43px]">
-                {link.links.map((item) => (
-                  <a
-                    key={item.name}
-                    href={item.href}
-                    className="inter-400 text-[19.24px] leading-[28.87px]"
-                  >
-                    <div>{item.name}</div>
-                  </a>
-                ))}
-              </div>
+
+        {/* Reach Out */}
+        <div>
+          <h6 className="text-lg font-semibold mb-4">REACH OUT</h6>
+          <div className="space-y-2">
+            <p className="text-sm">
+              Father Agnel Technical Education Complex, near Noor Masjid, 
+              Juhu Nagar, Sector 9A, Vashi, Navi Mumbai, Maharashtra 400703
+            </p>
+            
+            {/* Social Icons */}
+            <div className="flex gap-4 mt-4">
+              {[
+                
+                { Icon: Instagram, href: "https://instagram.com", color: "hover:text-pink-400" },
+        
+                { Icon: Linkedin, href: "https://www.linkedin.com/company/fcrit-entrepreneurship-cell/", color: "hover:text-blue-600" }
+                
+              ].map(({ Icon, href, color }) => (
+                <a 
+                  key={href} 
+                  href={href} 
+                  target="_blank" 
+                  rel="noopener noreferrer" 
+                  className={`transition-colors duration-300 ${color}`}
+                >
+                  <Icon size={24} />
+                </a>
+              ))}
             </div>
-          ))}
+          </div>
         </div>
       </div>
-      <div className="mx-20 mt-20 bg-opacity-20 bg-[#E5F0FF05] rounded-[32px] flex gap-[14px] items-center justify-center py-[32px]">
-        <Image
-          src="/footer_leaf.svg"
-          alt="footer-leaf"
-          width={23.75}
-          height={27.05}
-        />
-        <div className="inter-600 text-[19.24px] leading-[28.87px]">
-          Website created by ECell&apos;FCRIT
-        </div>
+
+      {/* Copyright */}
+      <div className="text-center mt-8 pt-4 border-t border-purple-700">
+        <p>© 2025. All rights reserved.</p>
       </div>
     </footer>
   );

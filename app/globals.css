@@ -2,18 +2,34 @@
 @tailwind components;
 @tailwind utilities;
 @import url("https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap");
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Nova+Square&display=swap');
+
+@import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&display=swap');
 
 @font-face {
   font-family: "Squada One";
   src: url("/fonts/SquadaOne-Regular.ttf") format("truetype");
   font-weight: 400;
 }
-
+@font-face {
+  font-family: "Boston";
+  src: url("/fonts/BOSTON-CAPS.ttf");
+  font-weight: normal;
+  font-style: normal;
+}
 @font-face {
   font-family: "Marck Script";
   src: url("/fonts/MarckScript-Regular.ttf") format("truetype");
   font-weight: 400;
 }
+.font-Boston {
+  font-family: 'Boston', sans-serif;
+}
+.font-nova {
+  font-family: 'Nova Square', sans-serif;
+}
+
 
 .squada-one-regular {
   font-family: "Squada One", serif;
@@ -72,6 +88,10 @@
 .roboto-semibold {
   font-family: "Roboto", serif;
   font-weight: 600;
+}
+
+.font-poppins {
+  font-family: "Poppins", sans-serif;
 }
 
 .roboto-bold {
@@ -205,6 +225,14 @@ body {
     --chart-5: 27 87% 67%;
     --radius: 0.5rem;
   }
+
+  .bebas-neue-regular {
+    font-family: "Bebas Neue", serif;
+    font-weight: 400;
+    font-style: normal;
+  }
+  
+  
   .dark {
     --background: 0 0% 3.9%;
     --foreground: 0 0% 98%;

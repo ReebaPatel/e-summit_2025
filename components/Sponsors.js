@@ -1,42 +1,71 @@
-import React from "react";
-import Image from "next/image";
+"use client";  // Add this line to make this a Client Component
+
+import React from 'react';
 
 const Sponsors = () => {
-  const sponsors = [
-    "/google.svg",
-    "/spotify.svg",
-    "/amazon.svg",
-    "/airbnb.svg",
-    "/microsoft.svg",
-  ];
-
   return (
-    <section className="flex flex-col items-center justify-center gap-8">
-      <h1 className="squada-one-regular text-[96px] leading-[96.49px] text-center bg-gradient-to-b from-[#B2B2B2] to-[#4C4C4C] text-transparent bg-clip-text">
-        Sponsors
+    <div className="relative w-full h-screen">
+      
+
+      {/* Sponsors Title */}
+      <h1 className="text-7xl font-extrabold text-white mb-6 font-poppins absolute z-10 top-1/4 left-1/2 transform -translate-x-1/2">
+        SPONSORS<span className="text-blue-500">.</span>
       </h1>
-      <div className="marquee">
-        <div className="track items-center gap-36">
-          {sponsors.concat(sponsors).map((src, index) => (
-            <div key={index} className="item">
-              <Image
-                src={src}
-                alt={`Sponsor ${index + 1}`}
-                width={170}
-                height={90}
-                priority
-              />
-            </div>
-          ))}
+
+      {/* Coming Soon Texts */}
+      <div className="font-Bebas Neue absolute top-1/2 left-1/2 transform -translate-x-1/2 z-10 w-full">
+        <div className="rfm-marquee-container py-2 flex flex-col gap-8 my-2 w-full">
+          {/* Row 1: Scrolling Left to Right */}
+          <div className="rfm-marquee flex gap-4 animate-marquee-left" style={{ animationDuration: "10s" }}>
+            {Array(6).fill("Coming Soon").map((text, index) => (
+              <div key={index} className="rfm-child flex items-center justify-center mx-24">
+                <div className="h-32 my-2 w-32 text-white text-xl">
+                  {text}
+                </div>
+              </div>
+            ))}
+          </div>
+
+          {/* Row 2: Scrolling Right to Left */}
+          <div className="rfm-marquee flex gap-4 animate-marquee-right" style={{ animationDuration: "10s" }}>
+            {Array(6).fill("Coming Soon").map((text, index) => (
+              <div key={index} className="rfm-child flex items-center justify-center mx-24">
+                <div className="h-32 my-2 w-32 text-white text-xl">
+                  {text}
+                </div>
+              </div>
+            ))}
+          </div>
         </div>
       </div>
-      <Image
-        src="/sponsors_wavy_line.png"
-        alt="wavy-line"
-        width={1314}
-        height={134.28}
-      />
-    </section>
+
+      {/* Inline CSS for animations */}
+      <style jsx>{`
+        @keyframes marquee-left {
+          0% {
+            transform: translateX(100%);
+          }
+          100% {
+            transform: translateX(-100%);
+          }
+        }
+        @keyframes marquee-right {
+          0% {
+            transform: translateX(-100%);
+          }
+          100% {
+            transform: translateX(100%);
+          }
+        }
+
+        .animate-marquee-left {
+          animation: marquee-left 10s linear infinite;
+        }
+        .animate-marquee-right {
+          animation: marquee-right 10s linear infinite;
+        }
+      `}</style>
+    </div>
   );
 };
 
