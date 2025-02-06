@@ -1,7 +1,7 @@
 import About from "../components/About";
 import Sponsors from "../components/Sponsors";
 import HeroComponent from "../components/HeroComponent";
-import WhyECellDTU from "../components/Whyecell";
+import WhyECell from "../components/WhyECell";
 import EventGrid from "../components/Events";
 import { AnimatedPinDemo } from "../components/Animatedpin";
 import CarouselDemo from "../components/CarouselDemo";
@@ -13,7 +13,7 @@ export default function Home() {
       <HeroComponent />
       <Sponsors />
       <About />
-      <WhyECellDTU />
+      <WhyECell />
       <EventGrid />
       <AnimatedPinDemo />
       <CarouselDemo />
