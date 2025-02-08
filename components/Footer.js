@@ -13,7 +13,7 @@ const Footer = () => {
     <footer
       ref={ref}
       className={`
-        bg-gradient-to-br from-purple-500/80 via-purple-700/90 to-purple-900/95 
+        bg-gradient-to-br from-gray-500/80 via-gray-700/90 to-gray-900/95 
         text-white p-10 transition-all duration-1000 ease-in-out
         ${inView ? "opacity-100 translate-y-0" : "opacity-0 translate-y-10"}
       `}
@@ -36,7 +36,7 @@ const Footer = () => {
             seeding funds and angel investors to transform the newly proposed
             ideas into successful start-ups.
           </p>
-          <button className="mt-4 bg-white text-purple-600 px-4 py-2 rounded-lg hover:bg-purple-100 transition">
+          <button className="mt-4 bg-white text-gray-600 px-4 py-2 rounded-lg hover:bg-purple-100 transition">
             Email Us
           </button>
         </div>

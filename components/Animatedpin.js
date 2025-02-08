@@ -41,7 +41,7 @@ export function AnimatedPinDemo() {
     <div className="relative w-full my-48 min-h-screen flex flex-col items-center justify-center overflow-hidden pt-32">
       {/* Title */}
       <h1 className="absolute top-10 left-1/2 transform -translate-x-1/2 text-white text-6xl font-poppins font-extrabold">
-        Competitions<span className="text-blue-500">.</span>
+        Competitions
       </h1>
 
       {/* Card Container */}

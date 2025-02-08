@@ -36,7 +36,7 @@ export default function RootLayout({ children }) {
             <source src="/hero.mp4" type="video/mp4" />
           </video>
         </div>
-        <div className="relative">{children}</div>
+        <div className="relative overflow-hidden">{children}</div>
       </body>
     </html>
   );
