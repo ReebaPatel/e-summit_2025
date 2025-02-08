@@ -1,12 +1,12 @@
-import { Geist, Geist_Mono } from "next/font/google";
+import { Geist as GeistSans, Geist_Mono as GeistMono } from "next/font/google";
 import "./globals.css";
 
-const geistSans = Geist({
+const geistSans = GeistSans({
   variable: "--font-geist-sans",
   subsets: ["latin"],
 });
 
-const geistMono = Geist_Mono({
+const geistMono = GeistMono({
   variable: "--font-geist-mono",
   subsets: ["latin"],
 });
@@ -23,18 +23,20 @@ export default function RootLayout({ children }) {
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        {/* Background Video */}
-        <video
-          autoPlay
-          loop
-          muted
-          className="fixed top-0 left-0 w-full h-full object-cover -z-10"
-          style={{ opacity: 0.4 }}
-        >
-          <source src="/hero.mp4" type="video/mp4" />
-          Your browser does not support the video tag.
-        </video>
-        <div className="relative overflow-hidden">{children}</div>
+        {/* Create a container for the video with a light/dark mode aware background */}
+        <div className="fixed top-0 left-0 w-full h-full -z-10">
+          <div className="absolute inset-0 bg-white/0 dark:bg-black/40" />
+          <video
+            autoPlay
+            loop
+            muted
+            className="w-full h-full object-cover"
+            playsInline
+          >
+            <source src="/hero.mp4" type="video/mp4" />
+          </video>
+        </div>
+        <div className="relative">{children}</div>
       </body>
     </html>
   );
