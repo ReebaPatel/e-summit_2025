@@ -1,6 +1,6 @@
 "use client";
 import React from "react";
-import { Instagram, Twitter, Linkedin } from "lucide-react";
+import { Instagram, Linkedin } from "lucide-react";
 import { useInView } from "react-intersection-observer";
 
 const Footer = () => {
@@ -13,20 +13,22 @@ const Footer = () => {
     <footer
       ref={ref}
       className={`
-        bg-gradient-to-br from-gray-500/80 via-gray-700/90 to-gray-900/95 
-        text-white p-10 transition-all duration-1000 ease-in-out
+        bg-gradient-to-br from-orange-400/60 via-red-600/65 to-red-900/70
+        background-animate backdrop-blur-sm text-white p-10 
+        transition-all duration-1000 ease-in-out
         ${inView ? "opacity-100 translate-y-0" : "opacity-0 translate-y-10"}
       `}
+      style={{
+        backgroundSize: "200% 200%",
+        animation: "gradient 15s ease infinite",
+      }}
     >
       <div className="container mx-auto grid grid-cols-1 md:grid-cols-3 gap-8">
         {/* About Section */}
         <div>
           <div className="flex items-center gap-4 mb-4">
-            <img
-              src="/e-cell-logo.svg"
-              alt="E-Cell Logo"
-              className="w-16 h-16"
-            />
+            <img src="/e-cell-logo.svg" alt="E-Cell Logo" className="w-24 h-24" />
+            <img src="/iic.svg" alt="IIC Logo" className="w-24 h-24" />
           </div>
           <p className="text-sm leading-relaxed">
             E-Cell FCRIT aims to induce an entrepreneurial mindset into the
@@ -36,7 +38,7 @@ const Footer = () => {
             seeding funds and angel investors to transform the newly proposed
             ideas into successful start-ups.
           </p>
-          <button className="mt-4 bg-white text-gray-600 px-4 py-2 rounded-lg hover:bg-purple-100 transition">
+          <button className="mt-4 bg-white/10 backdrop-blur-sm text-white px-4 py-2 rounded-lg hover:bg-white/20 transition duration-300">
             Email Us
           </button>
         </div>
@@ -44,7 +46,26 @@ const Footer = () => {
         {/* Quick Links */}
         <div>
           <h6 className="text-lg font-semibold mb-4">QUICK LINKS</h6>
-          <div className="space-y-2">{/* Add quick links if needed */}</div>
+          <div className="space-y-2">
+            <a
+              href="https://ecell.uapp.in"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="block text-md text-white-200 hover:text-orange-400 transition duration-300"
+            >
+              Visit E-Cell Website →
+            </a>
+          </div>
+          <div className="space-y-2">
+            <a
+              href="https://spark-a-thon.vercel.app"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="block text-md text-white-200 hover:text-orange-400 transition duration-300"
+            >
+              SPARKATHON Website →
+            </a>
+          </div>
         </div>
 
         {/* Reach Out */}
@@ -62,13 +83,12 @@ const Footer = () => {
                 {
                   Icon: Instagram,
                   href: "https://www.instagram.com/ecellfcrit/",
-                  color: "hover:text-pink-400",
+                  color: "hover:text-orange-300",
                 },
-
                 {
                   Icon: Linkedin,
                   href: "https://www.linkedin.com/company/fcrit-entrepreneurship-cell/",
-                  color: "hover:text-blue-600",
+                  color: "hover:text-orange-200",
                 },
               ].map(({ Icon, href, color }) => (
                 <a
@@ -87,7 +107,7 @@ const Footer = () => {
       </div>
 
       {/* Copyright */}
-      <div className="text-center mt-8 pt-4 border-t border-purple-700">
+      <div className="text-center mt-8 pt-4 border-t border-orange-400/30">
         <p>© 2025. All rights reserved.</p>
       </div>
     </footer>
