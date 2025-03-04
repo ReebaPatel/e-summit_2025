@@ -1,43 +1,14 @@
 import About from "../components/About";
 import Sponsors from "../components/Sponsors";
 import HeroComponent from "../components/HeroComponent";
-import EventGrid from "../components/Events";
+// import EventGrid from "../components/Events";
 import AnimatedPinDemo from "../components/Animatedpin";
 // import CarouselDemo from "../components/CarouselDemo";
 import Speakers from "../components/Speakers";
 import Footer from "../components/Footer";
+import { eventDetails } from "@/lib/eventData";
 
 export default function Home() {
-  const cards = [
-    {
-      id: "hack-business",
-      image: "/hack.jpg",
-    },
-    {
-      id: "ipl-auction",
-      image: "/ipl.jpg",
-    },
-    {
-      id: "deal-and-disrupt",
-      image: "/deal.jpg",
-    },
-    {
-      id: "entrepreneurial-escape-room",
-      image: "/hunt.jpg",
-    },
-    {
-      id: "reboot-and-revive",
-      image: "/reboot.jpg",
-    },
-    {
-      id: "mun",
-      image: "/mun.jpg",
-    },
-    {
-      id: "innovex",
-      image: "/innovex.jpg",
-    },
-  ];
   return (
     <main>
       <HeroComponent />
@@ -46,7 +17,9 @@ export default function Home() {
 
       <div className="relative w-full h-screen overflow-hidden">
         <div className="flex flex-col items-center justify-start h-full text-center text-white px-4 pt-20">
-          <h1 className="text-7xl font-extrabold mb-6">Why E-Cell FCRIT</h1>
+          <h1 className="text-4xl md:text-7xl font-extrabold mb-6">
+            Why E-Cell FCRIT
+          </h1>
           <p className="text-lg max-w-3xl leading-relaxed">
             E-Cell FCRIT has championed an entrepreneurial ethos, guiding
             students with the expertise of venture capitalists and industry
@@ -61,18 +34,18 @@ export default function Home() {
         </div>
       </div>
 
-      <EventGrid />
+      {/* <EventGrid /> */}
       <div className="relative py-12">
-        <h1 className="text-center text-white text-6xl font-bold">
+        <h1 className="text-center text-white text-4xl md:text-6xl font-bold">
           Competitions
         </h1>
         <div className="flex flex-wrap items-center justify-center">
-          {Object.values(cards).map((event, id) => (
+          {Object.values(eventDetails).map((event) => (
             <AnimatedPinDemo
-              key={id}
-              title="Register"
-              href={`/register/${event.id}`}
-              img={event.image}
+              key={event.id}
+              title="Read more"
+              href={`/events/${event.id}`}
+              img={event.img}
             />
           ))}
         </div>

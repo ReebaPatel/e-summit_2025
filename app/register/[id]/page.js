@@ -1,16 +1,21 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { motion } from "framer-motion";
-import { User, Mail, Phone, School, Users, KeyRound } from "lucide-react";
+import { User, Mail, Phone, School, Users, QrCode, Upload } from "lucide-react";
+import Image from "next/image";
+import { eventDetails } from "@/lib/eventData";
+import * as tf from "@tensorflow/tfjs";
 
 export default function RegistrationForm({ params }) {
   const eventId = React.use(params).id;
+  const eventQR = eventDetails[eventId].qr;
   const eventName = eventId
     .replace(/-/g, " ")
     .split(" ")
     .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
     .join(" ");
+
   const [formData, setFormData] = useState({
     name: "",
     mobile: "",
@@ -22,12 +27,76 @@ export default function RegistrationForm({ params }) {
     coTeamMember1: { name: "", mobile: "" },
     coTeamMember2: { name: "", mobile: "" },
     coTeamMember3: { name: "", mobile: "" },
-    passCode: "",
+    paymentScreenshot: null,
   });
 
-  const onSubmit = async (data) => {
-    // console.log(data);
+  const [model, setModel] = useState(null);
+  const [paymentVerificationResult, setPaymentVerificationResult] =
+    useState("");
+  const [paymentVerificationLoading, setPaymentVerificationLoading] =
+    useState(false);
+
+  // Load TensorFlow model when the component mounts
+  useEffect(() => {
+    const loadModel = async () => {
+      try {
+        const loadedModel = await tf.loadLayersModel(`/model.json`);
+        setModel(loadedModel);
+        // console.log("Model loaded successfully.");
+      } catch (error) {
+        console.error("Error loading model:", error);
+      }
+    };
+    loadModel();
+  }, []);
+
+  // Preprocess image for model input
+  const processImage = async (imgElement) => {
+    const img = tf.browser.fromPixels(imgElement);
+    const resized = tf.image.resizeBilinear(img, [224, 224]); // Resize to match model input shape
+    const normalized = resized.div(tf.scalar(255)); // Normalize pixel values (0-1)
+    return normalized.expandDims(0); // Add batch dimension
+  };
+
+  // Verify Payment Screenshot
+  const verifyPayment = async () => {
+    if (!formData.paymentScreenshot) {
+      setPaymentVerificationResult("Please upload an image first.");
+      return;
+    }
+
+    setPaymentVerificationLoading(true);
     try {
+      if (!model) {
+        throw new Error("Model not loaded. Please refresh the page.");
+      }
+
+      const imgElement = document.getElementById("uploaded-img");
+      const processedImage = await processImage(imgElement);
+      const predictions = model.predict(processedImage);
+      const output = await predictions.data();
+      const paymentVerified =
+        output[0] > 0.5 ? "Payment Verified ✅" : "Payment Not Verified ❌";
+
+      setPaymentVerificationResult(paymentVerified);
+    } catch (error) {
+      setPaymentVerificationResult("Error processing image.");
+      console.error(error);
+    }
+    setPaymentVerificationLoading(false);
+  };
+
+  const onSubmit = async (data) => {
+    try {
+      // Verify payment before submission
+      if (
+        !paymentVerificationResult ||
+        paymentVerificationResult !== "Payment Verified ✅"
+      ) {
+        alert("Please verify payment first!");
+        return;
+      }
+
       const response = await fetch("/api/register", {
         method: "POST",
         headers: {
@@ -65,6 +134,14 @@ export default function RegistrationForm({ params }) {
     } catch (error) {
       console.error(error);
     }
+  };
+
+  const handleFileChange = (e) => {
+    const file = e.target.files[0];
+    setFormData((prev) => ({
+      ...prev,
+      paymentScreenshot: file,
+    }));
   };
 
   const courseOptions = ["B.E", "BSc", "BBA", "Other"];
@@ -220,20 +297,88 @@ export default function RegistrationForm({ params }) {
             </div>
           </div>
 
-          {/* Pass Code */}
-          <div className="border-t border-gray-800 pt-6">
-            <div className="flex items-center space-x-4">
-              <KeyRound className="w-5 h-5 text-gray-400" />
-              <input
-                type="text"
-                name="passCode"
-                placeholder="Unique Pass Code"
-                value={formData.passCode}
-                onChange={handleChange}
-                className="flex-1 bg-gray-900 text-white border border-gray-700 rounded-lg px-4 py-3 focus:outline-none focus:border-purple-500 transition-colors"
-                required
-              />
+          <div className="border-t border-gray-800 py-6 space-y-6">
+            <div className="flex flex-col md:flex-row items-center justify-between space-y-16 md:space-y-0">
+              <div className="flex items-center space-x-4 w-full md:w-1/2">
+                <QrCode className="w-5 h-5 text-gray-400" />
+                <div className="flex-1">
+                  {eventQR && (
+                    <div className="w-32 h-32 bg-white p-2 rounded-lg">
+                      <Image
+                        src={eventQR}
+                        alt="Event QR Code"
+                        width={128}
+                        height={128}
+                        className="object-contain"
+                      />
+                    </div>
+                  )}
+                </div>
+              </div>
+
+              <div className="flex items-center space-x-4 w-full md:w-1/2">
+                <Upload className="w-5 h-5 text-gray-400" />
+                <div className="flex-1">
+                  <label className="block">
+                    <span className="sr-only">Payment Screenshot</span>
+                    <input
+                      type="file"
+                      required
+                      name="paymentScreenshot"
+                      onChange={handleFileChange}
+                      accept="image/*"
+                      className="block w-full text-sm text-gray-500
+                      file:mr-4 file:py-2 file:px-4
+                      file:rounded-full file:border-0
+                      file:text-sm file:font-semibold
+                      file:bg-purple-50 file:text-purple-700
+                      hover:file:bg-purple-100
+                      bg-gray-900 border border-gray-700 rounded-lg"
+                    />
+                  </label>
+                  {formData.paymentScreenshot && (
+                    <p className="text-sm text-gray-400 mt-2 truncate">
+                      {formData.paymentScreenshot.name}
+                    </p>
+                  )}
+                </div>
+              </div>
             </div>
+
+            {/* Payment Verification Section */}
+            {formData.paymentScreenshot && (
+              <div className="mt-4">
+                <div className="image-preview mb-4">
+                  <img
+                    id="uploaded-img"
+                    src={URL.createObjectURL(formData.paymentScreenshot)}
+                    alt="Uploaded"
+                    className="max-w-full h-auto rounded-lg"
+                  />
+                </div>
+                <button
+                  type="button"
+                  onClick={verifyPayment}
+                  disabled={paymentVerificationLoading}
+                  className="w-full bg-gradient-to-r from-green-600 to-green-800 text-white font-nova py-3 rounded-lg shadow-lg hover:shadow-xl transition-all duration-300"
+                >
+                  {paymentVerificationLoading
+                    ? "Verifying..."
+                    : "Verify Payment"}
+                </button>
+                {paymentVerificationResult && (
+                  <p
+                    className={`mt-2 text-center ${
+                      paymentVerificationResult.includes("Verified")
+                        ? "text-green-500"
+                        : "text-red-500"
+                    }`}
+                  >
+                    {paymentVerificationResult}
+                  </p>
+                )}
+              </div>
+            )}
           </div>
 
           {/* Submit Button */}
@@ -243,7 +388,7 @@ export default function RegistrationForm({ params }) {
             type="submit"
             className="w-full bg-gradient-to-r from-purple-600 to-indigo-600 text-white font-nova py-4 rounded-lg shadow-lg hover:shadow-xl transition-all duration-300"
           >
-            Submit Registration
+            Register for {eventName}
           </motion.button>
         </form>
       </motion.div>

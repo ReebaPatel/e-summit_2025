@@ -12,17 +12,29 @@
   src: url("/fonts/SquadaOne-Regular.ttf") format("truetype");
   font-weight: 400;
 }
+
 @font-face {
   font-family: "Boston";
   src: url("/fonts/BOSTON-CAPS.ttf");
   font-weight: normal;
   font-style: normal;
 }
+
 @font-face {
   font-family: "Marck Script";
   src: url("/fonts/MarckScript-Regular.ttf") format("truetype");
   font-weight: 400;
 }
+
+@keyframes marquee {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(-50%);
+  }
+}
+
 .font-Boston {
   font-family: "Boston", sans-serif;
 }

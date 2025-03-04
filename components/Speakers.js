@@ -8,7 +8,6 @@ const Speakers = () => {
     { name: "Mrs. Soma Maitra", designation: "", image: "/soma.jpg" },
     { name: "Mr. Sandeep Kaul", designation: "", image: "/sandeep.jpg" },
     { name: "Mr. Uday Wankawala", designation: "", image: "/uday.jpg" },
-    
   ];
 
   const handlePreviousClick = () =>
