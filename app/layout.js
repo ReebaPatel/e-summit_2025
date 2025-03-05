@@ -1,5 +1,14 @@
-import { Geist as GeistSans, Geist_Mono as GeistMono } from "next/font/google";
+import {
+  Geist as GeistSans,
+  Geist_Mono as GeistMono,
+  Orbitron,
+} from "next/font/google";
 import "./globals.css";
+
+const orbitron = Orbitron({
+  subsets: ["latin"],
+  variable: "--font-orbitron",
+});
 
 const geistSans = GeistSans({
   variable: "--font-geist-sans",
@@ -21,7 +30,7 @@ export default function RootLayout({ children }) {
   return (
     <html lang="en">
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+        className={`${geistSans.variable} ${geistMono.variable} ${orbitron.variable} antialiased`}
       >
         {/* Create a container for the video with a light/dark mode aware background */}
         <div className="fixed top-0 left-0 w-full h-full -z-10">

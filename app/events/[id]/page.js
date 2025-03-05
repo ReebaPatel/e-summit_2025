@@ -315,7 +315,7 @@ const EventDetailPage = async ({ params }) => {
                   Registration Fee
                 </h3>
                 <p className="text-gray-300">
-                  ₹200 per team selected for poster presentation after Idea
+                  ₹250 per team selected for poster presentation after Idea
                   Submission round
                 </p>
               </div>
