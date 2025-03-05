@@ -44,7 +44,7 @@ const HeroComponent = () => {
         <div className="flex flex-col items-center gap-1 sm:gap-2 w-full">
           <div className="flex items-center justify-center w-full space-x-8 sm:space-x-12">
             <img
-              src="/e-cell-logo.svg"
+              src="/e-cell-logo.png"
               alt="E-Cell Logo"
               className="w-20 h-20 sm:w-28 sm:h-28 object-contain transition-transform duration-300 hover:rotate-12"
             />

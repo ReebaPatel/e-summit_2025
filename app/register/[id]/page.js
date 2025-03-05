@@ -8,6 +8,7 @@ import { eventDetails } from "@/lib/eventData";
 import * as tf from "@tensorflow/tfjs";
 import { storage } from "@/appwrite";
 import { ID } from "appwrite";
+import { useForm, Controller } from "react-hook-form";
 
 export default function RegistrationForm({ params }) {
   const eventId = React.use(params).id;
@@ -18,21 +19,31 @@ export default function RegistrationForm({ params }) {
     .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
     .join(" ");
 
-  const [formData, setFormData] = useState({
-    name: "",
-    mobile: "",
-    email: "",
-    eventName: eventName,
-    collegeName: "",
-    course: "",
-    otherCourse: "",
-    coTeamMember1: { name: "", mobile: "" },
-    coTeamMember2: { name: "", mobile: "" },
-    coTeamMember3: { name: "", mobile: "" },
-    paymentScreenshot: "",
+  const {
+    register,
+    handleSubmit,
+    control,
+    watch,
+    formState: { errors },
+  } = useForm({
+    defaultValues: {
+      name: "",
+      mobile: "",
+      email: "",
+      eventName: eventName,
+      collegeName: "",
+      course: "",
+      otherCourse: "",
+      businessIdea: eventId === "hack-a-business" ? "" : undefined,
+      coTeamMember1: { name: "", mobile: "" },
+      coTeamMember2: { name: "", mobile: "" },
+      coTeamMember3: { name: "", mobile: "" },
+      paymentScreenshot: "",
+    },
   });
 
   const [model, setModel] = useState(null);
+  const [paymentScreenshot, setPaymentScreenshot] = useState(null);
   const [paymentVerificationResult, setPaymentVerificationResult] =
     useState("");
   const [paymentVerificationLoading, setPaymentVerificationLoading] =
@@ -44,7 +55,6 @@ export default function RegistrationForm({ params }) {
       try {
         const loadedModel = await tf.loadLayersModel(`/model.json`);
         setModel(loadedModel);
-        // console.log("Model loaded successfully.");
       } catch (error) {
         console.error("Error loading model:", error);
       }
@@ -62,7 +72,7 @@ export default function RegistrationForm({ params }) {
 
   // Verify Payment Screenshot
   const verifyPayment = async () => {
-    if (!formData.paymentScreenshot) {
+    if (!paymentScreenshot) {
       setPaymentVerificationResult("Please upload an image first.");
       return;
     }
@@ -102,21 +112,19 @@ export default function RegistrationForm({ params }) {
       let fileUrl = "";
 
       try {
-        const file = formData.paymentScreenshot;
+        const file = paymentScreenshot;
 
         // Upload the file to Appwrite Storage
         const response = await storage.createFile(
-          'payments', // Replace with your Appwrite bucket ID
+          "payments",
           ID.unique(),
-          file, // The file object
+          file
         );
-    
+
         // Construct the file URL
         fileUrl = `https://cloud.appwrite.io/v1/storage/buckets/payments/files/${response.$id}/view?project=e-summit-25`;
-    
-        // console.log('File uploaded successfully. File URL:', fileUrl);
       } catch (error) {
-        console.error('Error uploading file:', error);
+        console.error("Error uploading file:", error);
       }
 
       const registrationData = {
@@ -152,8 +160,7 @@ export default function RegistrationForm({ params }) {
         });
 
         if (sendEmail.ok) {
-          // console.log("Email sent successfully!");
-          alert("An email has been sent to your registered Email-ID!")
+          alert("An email has been sent to your registered Email-ID!");
         } else {
           console.error("Email sending failed!");
         }
@@ -165,33 +172,12 @@ export default function RegistrationForm({ params }) {
     }
   };
 
-  const handleFileChange = async (e) => {
+  const handleFileChange = (e) => {
     const file = e.target.files[0];
-    setFormData((prev) => ({
-      ...prev,
-      paymentScreenshot: file,
-    }));
-  };  
+    setPaymentScreenshot(file);
+  };
 
   const courseOptions = ["B.E", "BSc", "BBA", "Other"];
-
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    if (name.includes(".")) {
-      const [parent, child] = name.split(".");
-      setFormData((prev) => ({
-        ...prev,
-        [parent]: { ...prev[parent], [child]: value },
-      }));
-    } else {
-      setFormData((prev) => ({ ...prev, [name]: value }));
-    }
-  };
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    await onSubmit(formData);
-  };
 
   return (
     <div className="w-full max-w-2xl mx-auto p-4">
@@ -204,47 +190,66 @@ export default function RegistrationForm({ params }) {
           Registration Form
         </h2>
 
-        <form onSubmit={handleSubmit} className="space-y-6">
+        <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
           {/* Personal Information */}
           <div className="space-y-4">
             <div className="flex items-center space-x-4">
               <User className="w-5 h-5 text-gray-400" />
               <input
                 type="text"
-                name="name"
                 placeholder="Your Name"
-                value={formData.name}
-                onChange={handleChange}
+                {...register("name", {
+                  required: "Name is required",
+                  minLength: {
+                    value: 2,
+                    message: "Name must be at least 2 characters",
+                  },
+                })}
                 className="flex-1 bg-gray-900 text-white border border-gray-700 rounded-lg px-4 py-3 focus:outline-none focus:border-purple-500 transition-colors"
-                required
               />
             </div>
+            {errors.name && (
+              <p className="text-red-500 text-sm">{errors.name.message}</p>
+            )}
 
             <div className="flex items-center space-x-4">
               <Phone className="w-5 h-5 text-gray-400" />
               <input
                 type="tel"
-                name="mobile"
                 placeholder="Mobile Number"
-                value={formData.mobile}
-                onChange={handleChange}
+                {...register("mobile", {
+                  required: "Mobile number is required",
+                  pattern: {
+                    value: /^[6-9]\d{9}$/,
+                    message:
+                      "Please enter a valid 10-digit mobile number starting with 6-9",
+                  },
+                })}
                 className="flex-1 bg-gray-900 text-white border border-gray-700 rounded-lg px-4 py-3 focus:outline-none focus:border-purple-500 transition-colors"
-                required
               />
             </div>
+            {errors.mobile && (
+              <p className="text-red-500 text-sm">{errors.mobile.message}</p>
+            )}
 
             <div className="flex items-center space-x-4">
               <Mail className="w-5 h-5 text-gray-400" />
               <input
                 type="email"
-                name="email"
                 placeholder="Email Address"
-                value={formData.email}
-                onChange={handleChange}
+                {...register("email", {
+                  required: "Email is required",
+                  pattern: {
+                    value: /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/,
+                    message: "Please enter a valid email address",
+                  },
+                })}
                 className="flex-1 bg-gray-900 text-white border border-gray-700 rounded-lg px-4 py-3 focus:outline-none focus:border-purple-500 transition-colors"
-                required
               />
             </div>
+            {errors.email && (
+              <p className="text-red-500 text-sm">{errors.email.message}</p>
+            )}
           </div>
 
           {/* Education Information */}
@@ -253,44 +258,88 @@ export default function RegistrationForm({ params }) {
               <School className="w-5 h-5 text-gray-400" />
               <input
                 type="text"
-                name="collegeName"
                 placeholder="College Name"
-                value={formData.collegeName}
-                onChange={handleChange}
+                {...register("collegeName", {
+                  required: "College name is required",
+                  minLength: {
+                    value: 3,
+                    message: "College name must be at least 3 characters",
+                  },
+                })}
                 className="flex-1 bg-gray-900 text-white border border-gray-700 rounded-lg px-4 py-3 focus:outline-none focus:border-purple-500 transition-colors"
-                required
               />
             </div>
+            {errors.collegeName && (
+              <p className="text-red-500 text-sm">
+                {errors.collegeName.message}
+              </p>
+            )}
 
-            <div className="flex items-center space-x-4">
-              <select
-                name="course"
-                value={formData.course}
-                onChange={handleChange}
-                className="flex-1 bg-gray-900 text-white border border-gray-700 rounded-lg px-4 py-3 focus:outline-none focus:border-purple-500 transition-colors"
-                required
-              >
-                <option value="">Select Course</option>
-                {courseOptions.map((option) => (
-                  <option key={option} value={option}>
-                    {option}
-                  </option>
-                ))}
-              </select>
-            </div>
+            <Controller
+              name="course"
+              control={control}
+              rules={{ required: "Please select a course" }}
+              render={({ field }) => (
+                <select
+                  {...field}
+                  className="w-full bg-gray-900 text-white border border-gray-700 rounded-lg px-4 py-3 focus:outline-none focus:border-purple-500 transition-colors"
+                >
+                  <option value="">Select Course</option>
+                  {courseOptions.map((option) => (
+                    <option key={option} value={option}>
+                      {option}
+                    </option>
+                  ))}
+                </select>
+              )}
+            />
+            {errors.course && (
+              <p className="text-red-500 text-sm">{errors.course.message}</p>
+            )}
 
-            {formData.course === "Other" && (
+            {watch("course") === "Other" && (
               <input
                 type="text"
-                name="otherCourse"
                 placeholder="Specify Course"
-                value={formData.otherCourse}
-                onChange={handleChange}
+                {...register("otherCourse", {
+                  required: "Please specify your course",
+                  minLength: {
+                    value: 2,
+                    message: "Course name must be at least 2 characters",
+                  },
+                })}
                 className="w-full bg-gray-900 text-white border border-gray-700 rounded-lg px-4 py-3 focus:outline-none focus:border-purple-500 transition-colors"
-                required
               />
             )}
           </div>
+
+          {/* Business Idea for Hack-a-Business */}
+          {eventId === "hack-a-business" && (
+            <div className="space-y-4">
+              <textarea
+                placeholder="Brief Description of Your Business Idea"
+                {...register("businessIdea", {
+                  required: "Business idea description is required",
+                  minLength: {
+                    value: 50,
+                    message:
+                      "Please provide a more detailed description (min 50 characters)",
+                  },
+                  maxLength: {
+                    value: 500,
+                    message: "Description should not exceed 500 characters",
+                  },
+                })}
+                className="w-full bg-gray-900 text-white border border-gray-700 rounded-lg px-4 py-3 focus:outline-none focus:border-purple-500 transition-colors"
+                rows={4}
+              />
+              {errors.businessIdea && (
+                <p className="text-red-500 text-sm">
+                  {errors.businessIdea.message}
+                </p>
+              )}
+            </div>
+          )}
 
           {/* Team Members */}
           <div className="space-y-6">
@@ -306,26 +355,38 @@ export default function RegistrationForm({ params }) {
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <input
                       type="text"
-                      name={`coTeamMember${member}.name`}
                       placeholder="Name"
-                      value={formData[`coTeamMember${member}`].name}
-                      onChange={handleChange}
+                      {...register(`coTeamMember${member}.name`, {
+                        validate: (value) =>
+                          !value ||
+                          value.length >= 2 ||
+                          "Name must be at least 2 characters",
+                      })}
                       className="bg-gray-900 text-white border border-gray-700 rounded-lg px-4 py-3 focus:outline-none focus:border-purple-500 transition-colors"
                     />
                     <input
                       type="tel"
-                      name={`coTeamMember${member}.mobile`}
                       placeholder="Mobile Number"
-                      value={formData[`coTeamMember${member}`].mobile}
-                      onChange={handleChange}
+                      {...register(`coTeamMember${member}.mobile`, {
+                        validate: (value) =>
+                          !value ||
+                          /^[6-9]\d{9}$/.test(value) ||
+                          "Please enter a valid 10-digit mobile number starting with 6-9",
+                      })}
                       className="bg-gray-900 text-white border border-gray-700 rounded-lg px-4 py-3 focus:outline-none focus:border-purple-500 transition-colors"
                     />
                   </div>
+                  {errors.coTeamMember1 && (
+                    <p className="text-red-500 text-sm">
+                      {errors.coTeamMember1.message}
+                    </p>
+                  )}
                 </div>
               ))}
             </div>
           </div>
 
+          {/* Payment Upload Section */}
           <div className="border-t border-gray-800 py-6 space-y-6">
             <div className="flex flex-col md:flex-row items-center justify-between space-y-16 md:space-y-0">
               <div className="flex items-center space-x-4 w-full md:w-1/2">
@@ -365,9 +426,9 @@ export default function RegistrationForm({ params }) {
                       bg-gray-900 border border-gray-700 rounded-lg"
                     />
                   </label>
-                  {formData.paymentScreenshot && (
+                  {paymentScreenshot && (
                     <p className="text-sm text-gray-400 mt-2 truncate">
-                      {formData.paymentScreenshot.name}
+                      {paymentScreenshot.name}
                     </p>
                   )}
                 </div>
@@ -375,25 +436,15 @@ export default function RegistrationForm({ params }) {
             </div>
 
             {/* Payment Verification Section */}
-            {formData.paymentScreenshot && (
+            {paymentScreenshot && (
               <div className="mt-4">
                 <div className="image-preview mb-4">
-                {formData.paymentScreenshot && formData.paymentScreenshot instanceof File ? (
-  <img
-    id="uploaded-img"
-    src={URL.createObjectURL(formData.paymentScreenshot)}
-    alt="Uploaded"
-    className="max-w-full h-auto rounded-lg"
-  />
-) : (
-  // If it's not a File (i.e. a URL), use it directly
-  <img
-    id="uploaded-img"
-    src={formData.paymentScreenshot}
-    alt="Uploaded"
-    className="max-w-full h-auto rounded-lg"
-  />
-)}
+                  <img
+                    id="uploaded-img"
+                    src={URL.createObjectURL(paymentScreenshot)}
+                    alt="Uploaded"
+                    className="max-w-full h-auto rounded-lg"
+                  />
                 </div>
                 <button
                   type="button"

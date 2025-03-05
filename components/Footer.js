@@ -27,7 +27,11 @@ const Footer = () => {
         {/* About Section */}
         <div>
           <div className="flex items-center gap-4 mb-4">
-            <img src="/e-cell-logo.svg" alt="E-Cell Logo" className="w-24 h-24" />
+            <img
+              src="/e-cell-logo.png"
+              alt="E-Cell Logo"
+              className="w-24 h-24"
+            />
             <img src="/iic.svg" alt="IIC Logo" className="w-24 h-24" />
           </div>
           <p className="text-sm leading-relaxed">
