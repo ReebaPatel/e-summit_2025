@@ -30,7 +30,7 @@ const HeroComponent = () => {
           />
           <div className="flex flex-col items-center text-center text-white">
             <span className="text-xl sm:text-2xl font-bold tracking-wide drop-shadow-lg">
-              AGNEL CHARITIES
+              AGNEL CHARITIES'
             </span>
             <span className="text-lg sm:text-xl font-semibold tracking-wide drop-shadow-lg">
               FR. C. RODRIGUES INSTITUTE OF TECHNOLOGY
