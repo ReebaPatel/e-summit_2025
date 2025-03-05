@@ -12,7 +12,7 @@ const Sponsors = () => {
   ];    
 
   return (     
-    <div className="relative w-full min-h-screen">       
+    <div className="relative w-full">       
       {/* Sponsors Title */}       
       <h1 className="text-3xl sm:text-5xl md:text-7xl font-extrabold text-white mb-6 font-poppins absolute z-10 top-1/4 left-1/2 transform -translate-x-1/2 text-center px-4">         
         SPONSORS       
