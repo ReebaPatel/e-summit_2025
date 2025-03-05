@@ -2,7 +2,7 @@ import React from "react";
 
 export default function AboutUs() {
   return (
-    <div className="relative w-full my-48 overflow-hidden">
+    <div className="relative w-full my-12 overflow-hidden">
       {/* Content */}
       <div className="flex flex-col items-center justify-start h-full text-center px-4 pt-16">
         <h1 className="text-4xl md:text-7xl font-extrabold text-white mb-6 font-poppins">
