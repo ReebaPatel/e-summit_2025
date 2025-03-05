@@ -68,7 +68,7 @@ const HeroComponent = () => {
           <img
             src="/heading.png"
             alt="E-Summit Hero"
-            className="pt-24"
+            className="md:pt-24 pt-64"
             // className="max-w-full max-h-full object-contain drop-shadow-lg"
             // style={{ width: "100%", height: "auto" }}
           />

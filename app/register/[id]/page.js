@@ -117,7 +117,7 @@ export default function RegistrationForm({ params }) {
             subject: "Registration Successful",
             html: `
               <h1>Registration Successful!</h1>
-              <p>Thank you for registering for the event.</p>
+              <p>Thank you for registering for ${eventName}.</p>
               <p>We look forward to seeing you there!</p>
             `,
           }),
