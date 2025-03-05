@@ -7,6 +7,7 @@ import Image from "next/image";
 import { eventDetails } from "@/lib/eventData";
 import * as tf from "@tensorflow/tfjs";
 import { storage } from "@/appwrite";
+import { ID } from "appwrite";
 
 export default function RegistrationForm({ params }) {
   const eventId = React.use(params).id;
@@ -98,34 +99,37 @@ export default function RegistrationForm({ params }) {
         return;
       }
 
+      let fileUrl = "";
+
       try {
+        const file = formData.paymentScreenshot;
+
         // Upload the file to Appwrite Storage
         const response = await storage.createFile(
           'payments', // Replace with your Appwrite bucket ID
+          ID.unique(),
           file, // The file object
-          ['*'], // Permissions (adjust as needed)
         );
     
         // Construct the file URL
-        const fileUrl = `https://cloud.appwrite.io/v1/storage/buckets/payments/files/${response.$id}/view`;
-    
-        // Update the paymentScreenshot state with the file URL
-        setFormData((prev) => ({
-          ...prev,
-          paymentScreenshot: fileUrl,
-        }));
+        fileUrl = `https://cloud.appwrite.io/v1/storage/buckets/payments/files/${response.$id}/view?project=e-summit-25`;
     
         // console.log('File uploaded successfully. File URL:', fileUrl);
       } catch (error) {
         console.error('Error uploading file:', error);
       }
 
+      const registrationData = {
+        ...data,
+        paymentScreenshot: fileUrl,
+      };
+
       const response = await fetch("/api/register", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify(data),
+        body: JSON.stringify(registrationData),
       });
 
       if (response.ok) {
@@ -141,13 +145,15 @@ export default function RegistrationForm({ params }) {
             html: `
               <h1>Registration Successful!</h1>
               <p>Thank you for registering for ${eventName}.</p>
+              <p>The link to join the WhatsApp Group: ${eventDetails[eventId].whatsapp}</p>
               <p>We look forward to seeing you there!</p>
             `,
           }),
         });
 
         if (sendEmail.ok) {
-          console.log("Email sent successfully!");
+          // console.log("Email sent successfully!");
+          alert("An email has been sent to your registered Email-ID!")
         } else {
           console.error("Email sending failed!");
         }
@@ -372,12 +378,22 @@ export default function RegistrationForm({ params }) {
             {formData.paymentScreenshot && (
               <div className="mt-4">
                 <div className="image-preview mb-4">
-                  <img
-                    id="uploaded-img"
-                    src={URL.createObjectURL(formData.paymentScreenshot)}
-                    alt="Uploaded"
-                    className="max-w-full h-auto rounded-lg"
-                  />
+                {formData.paymentScreenshot && formData.paymentScreenshot instanceof File ? (
+  <img
+    id="uploaded-img"
+    src={URL.createObjectURL(formData.paymentScreenshot)}
+    alt="Uploaded"
+    className="max-w-full h-auto rounded-lg"
+  />
+) : (
+  // If it's not a File (i.e. a URL), use it directly
+  <img
+    id="uploaded-img"
+    src={formData.paymentScreenshot}
+    alt="Uploaded"
+    className="max-w-full h-auto rounded-lg"
+  />
+)}
                 </div>
                 <button
                   type="button"
