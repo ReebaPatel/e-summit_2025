@@ -88,7 +88,7 @@ const EventDetailPage = async ({ params }) => {
           </>
         );
 
-      case "escape-room":
+      case "entrepreneurial-escape-room":
         return (
           <>
             <section className="space-y-6">
@@ -169,7 +169,7 @@ const EventDetailPage = async ({ params }) => {
           </>
         );
 
-      case "hack-business":
+      case "hack-a-business":
         return (
           <>
             <section className="space-y-6">
@@ -232,7 +232,7 @@ const EventDetailPage = async ({ params }) => {
           </>
         );
 
-      case "tech-venture":
+      case "innovex":
         return (
           <>
             <section className="space-y-6">
