@@ -6,6 +6,7 @@ import { User, Mail, Phone, School, Users, QrCode, Upload } from "lucide-react";
 import Image from "next/image";
 import { eventDetails } from "@/lib/eventData";
 import * as tf from "@tensorflow/tfjs";
+import { storage } from "@/appwrite";
 
 export default function RegistrationForm({ params }) {
   const eventId = React.use(params).id;
@@ -27,7 +28,7 @@ export default function RegistrationForm({ params }) {
     coTeamMember1: { name: "", mobile: "" },
     coTeamMember2: { name: "", mobile: "" },
     coTeamMember3: { name: "", mobile: "" },
-    paymentScreenshot: null,
+    paymentScreenshot: "",
   });
 
   const [model, setModel] = useState(null);
@@ -97,6 +98,28 @@ export default function RegistrationForm({ params }) {
         return;
       }
 
+      try {
+        // Upload the file to Appwrite Storage
+        const response = await storage.createFile(
+          'payments', // Replace with your Appwrite bucket ID
+          file, // The file object
+          ['*'], // Permissions (adjust as needed)
+        );
+    
+        // Construct the file URL
+        const fileUrl = `https://cloud.appwrite.io/v1/storage/buckets/payments/files/${response.$id}/view`;
+    
+        // Update the paymentScreenshot state with the file URL
+        setFormData((prev) => ({
+          ...prev,
+          paymentScreenshot: fileUrl,
+        }));
+    
+        // console.log('File uploaded successfully. File URL:', fileUrl);
+      } catch (error) {
+        console.error('Error uploading file:', error);
+      }
+
       const response = await fetch("/api/register", {
         method: "POST",
         headers: {
@@ -136,13 +159,13 @@ export default function RegistrationForm({ params }) {
     }
   };
 
-  const handleFileChange = (e) => {
+  const handleFileChange = async (e) => {
     const file = e.target.files[0];
     setFormData((prev) => ({
       ...prev,
       paymentScreenshot: file,
     }));
-  };
+  };  
 
   const courseOptions = ["B.E", "BSc", "BBA", "Other"];
 
