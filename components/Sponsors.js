@@ -1,5 +1,4 @@
 "use client"; 
-import React from "react"; 
 import Image from "next/image";  
 
 const Sponsors = () => {   
@@ -9,6 +8,7 @@ const Sponsors = () => {
     "/chitale.png",     
     "/images.jpeg", 
     "/cloud9.png",  
+    "/bizom.jfif"
   ];    
 
   return (     
