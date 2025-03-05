@@ -172,62 +172,84 @@ const EventDetailPage = async ({ params }) => {
       case "hack-a-business":
         return (
           <>
+            {event.whatToExpect && (
+              <section className="space-y-6">
+                <h2 className="text-2xl font-bold">🔹 What to Expect?</h2>
+                <ul className="space-y-4">
+                  {event.whatToExpect.map((item, index) => (
+                    <li
+                      key={index}
+                      className="flex items-start gap-3 text-gray-300"
+                    >
+                      <span className="text-purple-400 font-bold">✅</span>
+                      {item}
+                    </li>
+                  ))}
+                </ul>
+              </section>
+            )}
+
+            {event.whyCompete && (
+              <section className="space-y-6">
+                <h2 className="text-2xl font-bold">🎁 Why Compete?</h2>
+                <ul className="space-y-4">
+                  {event.whyCompete.map((item, index) => (
+                    <li
+                      key={index}
+                      className="flex items-start gap-3 text-gray-300"
+                    >
+                      <span className="text-purple-400 font-bold">🚀</span>
+                      {item}
+                    </li>
+                  ))}
+                </ul>
+              </section>
+            )}
+
             <section className="space-y-6">
               <h2 className="text-2xl font-bold">
                 Competition Structure & Rounds
               </h2>
-              <div className="grid gap-4">
-                <div className="bg-gray-800/30 p-6 rounded-lg">
+              {event.format.map((section, index) => (
+                <div key={index} className="bg-gray-800/30 p-6 rounded-lg">
                   <h3 className="text-lg font-semibold text-purple-400 mb-2">
-                    Online Rounds
+                    {section.title}
                   </h3>
                   <ul className="space-y-2 text-gray-300">
-                    <li className="flex items-start gap-2">
-                      <span className="text-purple-400">✅</span> Team
-                      Description submission
-                    </li>
-                    <li className="flex items-start gap-2">
-                      <span className="text-purple-400">✅</span> Idea
-                      Submission round
-                    </li>
-                    <li className="flex items-start gap-2">
-                      <span className="text-purple-400">✅</span> Idea Judging
-                      Round
-                    </li>
+                    {section.content.map((item, itemIndex) => (
+                      <li key={itemIndex} className="flex items-start gap-2">
+                        <span className="text-purple-400">✅</span> {item}
+                      </li>
+                    ))}
                   </ul>
                 </div>
-
-                <div className="bg-gray-800/30 p-6 rounded-lg">
-                  <h3 className="text-lg font-semibold text-purple-400 mb-2">
-                    Offline Rounds
-                  </h3>
-                  <ul className="space-y-2 text-gray-300">
-                    <li className="flex items-start gap-2">
-                      <span className="text-purple-400">✅</span>{" "}
-                      Entrepreneurial Knowledge Quiz
-                    </li>
-                    <li className="flex items-start gap-2">
-                      <span className="text-purple-400">✅</span> Shark
-                      Tank-Style Investment & Pitch Round
-                    </li>
-                    <li className="flex items-start gap-2">
-                      <span className="text-purple-400">✅</span> Pit Solving
-                      Round
-                    </li>
-                  </ul>
-                </div>
-              </div>
+              ))}
             </section>
+
             <section className="space-y-6">
               <h2 className="text-2xl font-bold">Prizes & Benefits</h2>
               <div className="bg-gray-800/30 p-6 rounded-lg">
                 <h3 className="text-lg font-semibold text-purple-400 mb-2">
                   Exciting Goodies
                 </h3>
-                <p className="text-gray-300">
-                  Participate to win exciting goodies and prizes!
-                </p>
+                <ul className="space-y-2 text-gray-300">
+                  {event.prizes.map((prize, index) => (
+                    <li key={index} className="flex items-start gap-2">
+                      <span className="text-purple-400">✅</span> {prize}
+                    </li>
+                  ))}
+                </ul>
               </div>
+            </section>
+
+            {/* Optional: Additional notes about limited slots */}
+            <section className="space-y-6 bg-gray-800/30 p-6 rounded-lg">
+              <h3 className="text-lg font-semibold text-purple-400">
+                📢 Limited Slots Available!
+              </h3>
+              <p className="text-gray-300">
+                Register now to be part of this ultimate business hackathon!
+              </p>
             </section>
           </>
         );
@@ -238,95 +260,72 @@ const EventDetailPage = async ({ params }) => {
             <section className="space-y-6">
               <h2 className="text-2xl font-bold">Competition Structure</h2>
               <div className="grid gap-4">
-                <div className="bg-gray-800/30 p-6 rounded-lg">
-                  <h3 className="text-lg font-semibold text-indigo-400 mb-2">
-                    Idea Submission
-                  </h3>
-                  <p className="text-gray-300">
-                    Teams submit their innovative ideas. Top 40 ideas will be
-                    shortlisted for the next round.
-                  </p>
-                </div>
-                <div className="bg-gray-800/30 p-6 rounded-lg">
-                  <h3 className="text-lg font-semibold text-indigo-400 mb-2">
-                    Online Presentation
-                  </h3>
-                  <p className="text-gray-300">
-                    40 teams will present their ideas online. Each team gets 15
-                    minutes for the presentation. Conducted over two days with
-                    five panels evaluating the teams.
-                  </p>
-                </div>
-                <div className="bg-gray-800/30 p-6 rounded-lg">
-                  <h3 className="text-lg font-semibold text-indigo-400 mb-2">
-                    Offline Presentation & Demo
-                  </h3>
-                  <p className="text-gray-300">
-                    Top 20 teams will proceed to the offline round. 15-minute
-                    presentation, including a live demo.
-                  </p>
-                </div>
-                <div className="bg-gray-800/30 p-6 rounded-lg">
-                  <h3 className="text-lg font-semibold text-indigo-400 mb-2">
-                    Idea Validation Camp
-                  </h3>
-                  <p className="text-gray-300">
-                    Top teams will get a chance to participate in an Idea
-                    Validation Camp at CIBA & MIM. 10 exclusive entries along
-                    with PR opportunities.
-                  </p>
-                </div>
+                {event.format.map((item, index) => (
+                  <div key={index} className="bg-gray-800/30 p-6 rounded-lg">
+                    <h3 className="text-lg font-semibold text-indigo-400 mb-2">
+                      {item.title}
+                    </h3>
+                    <p className="text-gray-300">{item.content}</p>
+                  </div>
+                ))}
               </div>
             </section>
+
+            {event.whyCompete && (
+              <section className="space-y-6">
+                <h2 className="text-2xl font-bold">🚀 Why Compete?</h2>
+                <ul className="space-y-4">
+                  {event.whyCompete.map((item, index) => (
+                    <li
+                      key={index}
+                      className="flex items-start gap-3 text-gray-300"
+                    >
+                      <span className="text-indigo-400 font-bold">✅</span>
+                      {item}
+                    </li>
+                  ))}
+                </ul>
+              </section>
+            )}
+
             <section className="space-y-6">
               <h2 className="text-2xl font-bold">Prizes & Benefits</h2>
               <div className="bg-gray-800/30 p-6 rounded-lg">
                 <h3 className="text-lg font-semibold text-indigo-400 mb-2">
-                  Winners & Top Performers Get
+                  What You'll Win
                 </h3>
                 <ul className="space-y-2 text-gray-300">
-                  <li className="flex items-start gap-2">
-                    <span className="text-indigo-400">✅</span> Exclusive
-                    Goodies
-                  </li>
-                  <li className="flex items-start gap-2">
-                    <span className="text-indigo-400">✅</span> Certificates &
-                    Recognition
-                  </li>
-                  <li className="flex items-start gap-2">
-                    <span className="text-indigo-400">✅</span> Networking &
-                    Mentorship Opportunities
-                  </li>
-                  <li className="flex items-start gap-2">
-                    <span className="text-indigo-400">✅</span> A chance to
-                    pitch their idea at CIBA & MIM for further validation
-                  </li>
-                  <li className="flex items-start gap-2">
-                    <span className="text-indigo-400">✅</span> Prize Pool of
-                    5k+
-                  </li>
+                  {event.prizes.map((prize, index) => (
+                    <li key={index} className="flex items-start gap-2">
+                      <span className="text-indigo-400">✅</span> {prize}
+                    </li>
+                  ))}
                 </ul>
               </div>
             </section>
+
             <section className="space-y-6">
-              <h2 className="text-2xl font-bold">Registration</h2>
+              <h2 className="text-2xl font-bold">Registration Details</h2>
+              <div className="bg-gray-800/30 p-6 rounded-lg">
+                <h3 className="text-lg font-semibold text-indigo-400 mb-2">
+                  Important Dates
+                </h3>
+                <ul className="space-y-2 text-gray-300">
+                  <li className="flex items-start gap-2">
+                    <span className="text-indigo-400">📅</span> Event Date:{" "}
+                    {event.date}
+                  </li>
+                  <li className="flex items-start gap-2">
+                    <span className="text-indigo-400">⏰</span> Last
+                    Registration Date: {event.lastRegistrationDate}
+                  </li>
+                </ul>
+              </div>
               <div className="bg-gray-800/30 p-6 rounded-lg">
                 <h3 className="text-lg font-semibold text-indigo-400 mb-2">
                   Registration Fee
                 </h3>
-                <p className="text-gray-300">
-                  ₹250 per team selected for poster presentation after Idea
-                  Submission round
-                </p>
-              </div>
-              <div className="bg-gray-800/30 p-6 rounded-lg">
-                <h3 className="text-lg font-semibold text-indigo-400 mb-2">
-                  Event Date
-                </h3>
-                <p className="text-gray-300">
-                  Saturday, 7th (Tentative) for poster presentation/PPT
-                  presentation round
-                </p>
+                <p className="text-gray-300">{event.registrationFee}</p>
               </div>
             </section>
           </>
