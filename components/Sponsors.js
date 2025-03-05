@@ -12,14 +12,14 @@ const Sponsors = () => {
   ];    
 
   return (     
-    <div className="relative w-full">       
+    <div className="w-full">       
       {/* Sponsors Title */}       
-      <h1 className="text-3xl sm:text-5xl md:text-7xl font-extrabold text-white mb-6 font-poppins absolute z-10 top-1/4 left-1/2 transform -translate-x-1/2 text-center px-4">         
+      <h1 className="text-3xl sm:text-5xl md:text-7xl font-extrabold text-white mt-20 mb-6 font-poppins text-center px-4">         
         SPONSORS       
       </h1>              
 
       {/* Sponsors Logos */}       
-      <div className="font-Bebas Neue absolute top-1/2 left-1/2 transform -translate-x-1/2 z-10 w-full px-4">         
+      <div className="font-Bebas Neue transform -translate-x-1/2 z-10 w-full px-4">         
         <div className="rfm-marquee-container py-2 flex flex-col gap-4 sm:gap-8 my-2 w-full">           
           {/* Row 1: Scrolling Left to Right */}           
           <div             
@@ -92,7 +92,7 @@ const Sponsors = () => {
           animation: marquee-right 10s linear infinite;         
         }       
       `}</style>     
-    </div>   
+    </div>  
   ); 
 }; 
 
