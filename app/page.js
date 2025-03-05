@@ -15,8 +15,8 @@ export default function Home() {
       <Sponsors />
       <About />
 
-      <div className="relative w-full h-screen overflow-hidden">
-        <div className="flex flex-col items-center justify-start h-full text-center text-white px-4 pt-20">
+      <div className="relative w-full py-12">
+        <div className="flex flex-col items-center justify-start h-full text-center text-white">
           <h1 className="text-4xl md:text-7xl font-extrabold mb-6">
             Why E-Cell FCRIT
           </h1>
