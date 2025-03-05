@@ -8,7 +8,7 @@ const Sponsors = () => {
     "/chitale.png",     
     "/images.jpeg", 
     "/cloud9.png",  
-    "/bizom.jfif"
+    "/bizom.png"
   ];    
 
   return (     
