@@ -174,14 +174,14 @@ const EventDetailPage = async ({ params }) => {
           <>
             {event.whatToExpect && (
               <section className="space-y-6">
-                <h2 className="text-2xl font-bold">🔹 What to Expect?</h2>
+                <h2 className="text-2xl font-bold"> What to Expect?</h2>
                 <ul className="space-y-4">
                   {event.whatToExpect.map((item, index) => (
                     <li
                       key={index}
                       className="flex items-start gap-3 text-gray-300"
                     >
-                      <span className="text-purple-400 font-bold">✅</span>
+                      
                       {item}
                     </li>
                   ))}
@@ -191,14 +191,14 @@ const EventDetailPage = async ({ params }) => {
 
             {event.whyCompete && (
               <section className="space-y-6">
-                <h2 className="text-2xl font-bold">🎁 Why Compete?</h2>
+                <h2 className="text-2xl font-bold"> Why Compete?</h2>
                 <ul className="space-y-4">
                   {event.whyCompete.map((item, index) => (
                     <li
                       key={index}
                       className="flex items-start gap-3 text-gray-300"
                     >
-                      <span className="text-purple-400 font-bold">🚀</span>
+                      
                       {item}
                     </li>
                   ))}
@@ -218,7 +218,7 @@ const EventDetailPage = async ({ params }) => {
                   <ul className="space-y-2 text-gray-300">
                     {section.content.map((item, itemIndex) => (
                       <li key={itemIndex} className="flex items-start gap-2">
-                        <span className="text-purple-400">✅</span> {item}
+                         {item}
                       </li>
                     ))}
                   </ul>
@@ -235,7 +235,7 @@ const EventDetailPage = async ({ params }) => {
                 <ul className="space-y-2 text-gray-300">
                   {event.prizes.map((prize, index) => (
                     <li key={index} className="flex items-start gap-2">
-                      <span className="text-purple-400">✅</span> {prize}
+                       {prize}
                     </li>
                   ))}
                 </ul>
@@ -245,7 +245,7 @@ const EventDetailPage = async ({ params }) => {
             {/* Optional: Additional notes about limited slots */}
             <section className="space-y-6 bg-gray-800/30 p-6 rounded-lg">
               <h3 className="text-lg font-semibold text-purple-400">
-                📢 Limited Slots Available!
+                 Limited Slots Available!
               </h3>
               <p className="text-gray-300">
                 Register now to be part of this ultimate business hackathon!
@@ -273,14 +273,14 @@ const EventDetailPage = async ({ params }) => {
 
             {event.whyCompete && (
               <section className="space-y-6">
-                <h2 className="text-2xl font-bold">🚀 Why Compete?</h2>
+                <h2 className="text-2xl font-bold"> Why Compete?</h2>
                 <ul className="space-y-4">
                   {event.whyCompete.map((item, index) => (
                     <li
                       key={index}
                       className="flex items-start gap-3 text-gray-300"
                     >
-                      <span className="text-indigo-400 font-bold">✅</span>
+                      
                       {item}
                     </li>
                   ))}
@@ -297,7 +297,7 @@ const EventDetailPage = async ({ params }) => {
                 <ul className="space-y-2 text-gray-300">
                   {event.prizes.map((prize, index) => (
                     <li key={index} className="flex items-start gap-2">
-                      <span className="text-indigo-400">✅</span> {prize}
+                       {prize}
                     </li>
                   ))}
                 </ul>
@@ -312,11 +312,11 @@ const EventDetailPage = async ({ params }) => {
                 </h3>
                 <ul className="space-y-2 text-gray-300">
                   <li className="flex items-start gap-2">
-                    <span className="text-indigo-400">📅</span> Event Date:{" "}
+                     Event Date:{" "}
                     {event.date}
                   </li>
                   <li className="flex items-start gap-2">
-                    <span className="text-indigo-400">⏰</span> Last
+                     Last
                     Registration Date: {event.lastRegistrationDate}
                   </li>
                 </ul>
