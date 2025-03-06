@@ -371,7 +371,7 @@ const EventDetailPage = async ({ params }) => {
                 <ul className="space-y-2 text-gray-300">
                   {event.prizes.map((prize, index) => (
                     <li key={index} className="flex items-start gap-2">
-                      <span className="text-cyan-400">✅</span> {prize}
+                       {prize}
                     </li>
                   ))}
                 </ul>
