@@ -1,99 +1,85 @@
-"use client"; 
-import Image from "next/image";  
+import React from 'react';
 
-const Sponsors = () => {   
-  // Array of sponsor logos (replace with your actual logo paths)   
-  const sponsorLogos = [     
-    "/hipla.png",     
-    "/chitale.png",     
-    "/images.jpeg", 
-    "/cloud9.png",  
-    "/bizom.png"
-  ];    
+const SponsorBanner = () => {
+  return (
+    <div className="relative w-full my-12 overflow-hidden">
+      {/* Title Section */}
+      <div className="flex flex-col items-center justify-start h-full text-center px-4 pt-16 pb-8">
+        <h1 className="text-4xl md:text-7xl font-extrabold text-white mb-6 font-poppins">
+          PARTNERED BY
+        </h1>
+      </div>
 
-  return (     
-    <div className="w-full">       
-      {/* Sponsors Title */}       
-      <h1 className="text-3xl sm:text-5xl md:text-7xl font-extrabold text-white mt-20 mb-6 font-poppins text-center px-4">         
-        SPONSORS       
-      </h1>              
+      {/* Sponsors Banner - Responsive Grid */}
+      <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-4 lg:grid-cols-8 gap-4 w-full text-white">
+        {/* Title Sponsor */}
+        <div className="flex flex-col items-center justify-between p-4 border border-white-700">
+          <div className="text-xs text-center mb-2 font-semibold">TITLE SPONSOR</div>
+          <div className="flex items-center justify-center h-24">
+            <img src="/hipla.png" alt="Tata Logo" className="h-20 object-contain" />
+          </div>
+        </div>
 
-      {/* Sponsors Logos */}       
-      <div className="font-Bebas Neue transform -translate-x-1/2 z-10 w-full px-4">         
-        <div className="rfm-marquee-container py-2 flex flex-col gap-4 sm:gap-8 my-2 w-full">           
-          {/* Row 1: Scrolling Left to Right */}           
-          <div             
-            className="rfm-marquee flex gap-4 sm:gap-8 animate-marquee-left"             
-            style={{ animationDuration: "10s" }}           
-          >             
-            {Array(6).fill(sponsorLogos).flat().map((logoPath, index) => (               
-              <div                 
-                key={index}                 
-                className="rfm-child flex items-center justify-center mx-4 sm:mx-24"               
-              >                 
-                <div className="h-16 w-16 sm:h-32 sm:w-32 sm:my-2 relative">                   
-                  <Image                      
-                    src={logoPath}                      
-                    alt={`Sponsor ${index + 1} logo`}                      
-                    fill                      
-                    className="object-contain"                   
-                  />                 
-                </div>               
-              </div>             
-            ))}           
-          </div>                      
+        {/* Powered By */}
+        <div className="flex flex-col items-center justify-between p-4 border border-white-700">
+          <div className="text-xs text-center mb-2 font-semibold">POWERED BY</div>
+          <div className="flex items-center justify-center h-24">
+            <img src="/images.jpeg" alt="My11Circle Logo" className="h-24 object-contain" />
+          </div>
+        </div>
 
-          {/* Row 2: Scrolling Right to Left */}           
-          <div             
-            className="rfm-marquee flex gap-4 sm:gap-8 animate-marquee-right"             
-            style={{ animationDuration: "10s" }}           
-          >             
-            {Array(6).fill(sponsorLogos).flat().map((logoPath, index) => (               
-              <div                 
-                key={index}                 
-                className="rfm-child flex items-center justify-center mx-4 sm:mx-24"               
-              >                 
-                <div className="h-16 w-16 sm:h-32 sm:w-32 sm:my-2 relative">                   
-                  <Image                      
-                    src={logoPath}                      
-                    alt={`Sponsor ${index + 1} logo`}                      
-                    fill                      
-                    className="object-contain"                   
-                  />                 
-                </div>               
-              </div>             
-            ))}           
-          </div>         
-        </div>       
-      </div>              
+        {/* Co-Powered By */}
+        <div className="flex flex-col items-center justify-between p-4 border border-white-700">
+          <div className="text-xs text-center mb-2 font-semibold">CO-POWERED BY</div>
+          <div className="flex items-center justify-center h-24">
+            <img src="/credila.webp" alt="Wonder Cement Logo" className="h-16 object-contain" />
+          </div>
+        </div>
 
-      {/* Inline CSS for animations */}       
-      <style jsx>{`         
-        @keyframes marquee-left {           
-          0% {             
-            transform: translateX(100%);           
-          }           
-          100% {             
-            transform: translateX(-100%);           
-          }         
-        }         
-        @keyframes marquee-right {           
-          0% {             
-            transform: translateX(-100%);           
-          }           
-          100% {             
-            transform: translateX(100%);           
-          }         
-        }                  
-        .animate-marquee-left {           
-          animation: marquee-left 10s linear infinite;         
-        }         
-        .animate-marquee-right {           
-          animation: marquee-right 10s linear infinite;         
-        }       
-      `}</style>     
-    </div>  
-  ); 
-}; 
+        {/* Associate Partner */}
+        <div className="flex flex-col items-center justify-between p-4 border border-white-700">
+          <div className="text-xs text-center mb-2 font-semibold">ASSOCIATE PARTNER</div>
+          <div className="flex items-center justify-center h-24">
+            <img src="/bizom.png" alt="CEAT Logo" className="h-14 object-contain" />
+          </div>
+        </div>
 
-export default Sponsors;
+        {/* Incubation Partner */}
+        <div className="flex flex-col items-center justify-between p-4 border border-white-700">
+          <div className="text-xs text-center mb-2 font-semibold">INCUBATION PARTNER</div>
+          <div className="flex items-center justify-center h-24">
+            <img src="/ciba.jpg" alt="Star Sports Logo" className="h-20 object-contain" />
+          </div>
+        </div>
+
+        {/* In Association With */}
+        <div className="flex flex-col items-center justify-between p-4 border border-white-700">
+          <div className="text-xs text-center mb-2 font-semibold">IN ASSOCIATION WITH</div>
+          <div className="flex items-center justify-center h-24">
+            <img src="/chitale.png" alt="Star Sports Logo" className="h-16 object-contain" />
+          </div>
+        </div>
+
+        {/* Media Partner */}
+        <div className="flex flex-col items-center justify-between p-4 border border-white-700">
+          <div className="text-xs text-center mb-2 font-semibold">MEDIA PARTNER</div>
+          <div className="flex items-center justify-center space-x-2 h-24">
+            <img src="/dainik.png" alt="Dainik Logo" className="h-16 object-contain" />
+            <img src="/startup.jpeg" alt="Startup Logo" className="h-16 object-contain" />
+          </div>
+        </div>
+
+        {/* Energy Partner */}
+        <div className="flex flex-col items-center justify-between p-4 border border-white-700">
+          <div className="text-xs text-center mb-2 font-semibold">ENERGY & BEVERAGE PARTNER</div>
+          <div className="flex items-center justify-center space-x-2 h-24">
+            <img src="/cloud9.png" alt="Cloud9 Logo" className="h-16 object-contain" />
+            <img src="/papel.jpeg" alt="Cloud9 Logo" className="h-16 object-contain" />
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default SponsorBanner;
