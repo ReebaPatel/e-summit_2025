@@ -181,7 +181,6 @@ const EventDetailPage = async ({ params }) => {
                       key={index}
                       className="flex items-start gap-3 text-gray-300"
                     >
-                      
                       {item}
                     </li>
                   ))}
@@ -198,7 +197,6 @@ const EventDetailPage = async ({ params }) => {
                       key={index}
                       className="flex items-start gap-3 text-gray-300"
                     >
-                      
                       {item}
                     </li>
                   ))}
@@ -218,7 +216,7 @@ const EventDetailPage = async ({ params }) => {
                   <ul className="space-y-2 text-gray-300">
                     {section.content.map((item, itemIndex) => (
                       <li key={itemIndex} className="flex items-start gap-2">
-                         {item}
+                        {item}
                       </li>
                     ))}
                   </ul>
@@ -235,7 +233,7 @@ const EventDetailPage = async ({ params }) => {
                 <ul className="space-y-2 text-gray-300">
                   {event.prizes.map((prize, index) => (
                     <li key={index} className="flex items-start gap-2">
-                       {prize}
+                      {prize}
                     </li>
                   ))}
                 </ul>
@@ -245,7 +243,7 @@ const EventDetailPage = async ({ params }) => {
             {/* Optional: Additional notes about limited slots */}
             <section className="space-y-6 bg-gray-800/30 p-6 rounded-lg">
               <h3 className="text-lg font-semibold text-purple-400">
-                 Limited Slots Available!
+                Limited Slots Available!
               </h3>
               <p className="text-gray-300">
                 Register now to be part of this ultimate business hackathon!
@@ -280,7 +278,6 @@ const EventDetailPage = async ({ params }) => {
                       key={index}
                       className="flex items-start gap-3 text-gray-300"
                     >
-                      
                       {item}
                     </li>
                   ))}
@@ -297,7 +294,7 @@ const EventDetailPage = async ({ params }) => {
                 <ul className="space-y-2 text-gray-300">
                   {event.prizes.map((prize, index) => (
                     <li key={index} className="flex items-start gap-2">
-                       {prize}
+                      {prize}
                     </li>
                   ))}
                 </ul>
@@ -312,12 +309,10 @@ const EventDetailPage = async ({ params }) => {
                 </h3>
                 <ul className="space-y-2 text-gray-300">
                   <li className="flex items-start gap-2">
-                     Event Date:{" "}
-                    {event.date}
+                    Event Date: {event.date}
                   </li>
                   <li className="flex items-start gap-2">
-                     Last
-                    Registration Date: {event.lastRegistrationDate}
+                    Last Registration Date: {event.lastRegistrationDate}
                   </li>
                 </ul>
               </div>
@@ -371,7 +366,7 @@ const EventDetailPage = async ({ params }) => {
                 <ul className="space-y-2 text-gray-300">
                   {event.prizes.map((prize, index) => (
                     <li key={index} className="flex items-start gap-2">
-                       {prize}
+                      {prize}
                     </li>
                   ))}
                 </ul>
@@ -547,6 +542,12 @@ const EventDetailPage = async ({ params }) => {
                     <span className={getAccentColor()}>•</span>
                     Review rules and guidelines beforehand
                   </li>
+                  {eventId === "reboot-and-revive" && (
+                    <li className="flex items-start gap-2">
+                      <span className={getAccentColor()}>•</span>
+                      Bring at least one laptop per team.
+                    </li>
+                  )}
                 </ul>
               </div>
             </div>

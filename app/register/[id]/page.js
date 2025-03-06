@@ -2,7 +2,16 @@
 
 import React, { useState, useEffect } from "react";
 import { motion } from "framer-motion";
-import { User, Mail, Phone, School, Users, QrCode, Upload } from "lucide-react";
+import {
+  User,
+  Mail,
+  Phone,
+  School,
+  Users,
+  QrCode,
+  Upload,
+  UserCheck,
+} from "lucide-react";
 import Image from "next/image";
 import { eventDetails } from "@/lib/eventData";
 import * as tf from "@tensorflow/tfjs";
@@ -190,14 +199,26 @@ export default function RegistrationForm({ params }) {
           Registration Form
         </h2>
 
+        <div className="mb-6 p-3 bg-gray-800 rounded-lg">
+          <p className="text-white text-center">
+            <strong>Note:</strong> Each team consists of a Team Leader (you) +
+            up to 3 Co-Members (total 4 people)
+          </p>
+        </div>
+
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
-          {/* Personal Information */}
+          {/* Team Leader Information */}
           <div className="space-y-4">
+            <h3 className="text-xl font-nova text-white mb-4 flex items-center">
+              <UserCheck className="w-5 h-5 mr-2" />
+              Team Leader Information
+            </h3>
+
             <div className="flex items-center space-x-4">
               <User className="w-5 h-5 text-gray-400" />
               <input
                 type="text"
-                placeholder="Your Name"
+                placeholder="Your Name (Team Leader)"
                 {...register("name", {
                   required: "Name is required",
                   minLength: {
@@ -346,12 +367,17 @@ export default function RegistrationForm({ params }) {
             <div className="border-t border-gray-800 pt-6">
               <h3 className="text-xl font-nova text-white mb-4 flex items-center">
                 <Users className="w-5 h-5 mr-2" />
-                Team Members
+                Co-Team Members (Up to 3)
               </h3>
+
+              <p className="text-gray-400 mb-4">
+                Add details of up to 3 additional team members. With you as the
+                Team Leader, your team can have a maximum of 4 people total.
+              </p>
 
               {[1, 2, 3].map((member) => (
                 <div key={member} className="space-y-4 mb-6">
-                  <h4 className="text-gray-400">Co Team Member {member}</h4>
+                  <h4 className="text-gray-400">Co-Team Member {member}</h4>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <input
                       type="text"
