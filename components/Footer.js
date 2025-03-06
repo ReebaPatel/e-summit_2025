@@ -42,9 +42,12 @@ const Footer = () => {
             seeding funds and angel investors to transform the newly proposed
             ideas into successful start-ups.
           </p>
-          <button className="mt-4 bg-white/10 backdrop-blur-sm text-white px-4 py-2 rounded-lg hover:bg-white/20 transition duration-300">
+          <a href="mailto:ecellfcrit2425@gmail.com">
+            <button className="mt-4 bg-white/10 backdrop-blur-sm text-white px-4 py-2 rounded-lg hover:bg-white/20 transition duration-300">
             Email Us
-          </button>
+            </button>
+          </a>
+
         </div>
 
         {/* Quick Links */}
