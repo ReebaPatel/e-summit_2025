@@ -26,7 +26,7 @@ export async function POST(req) {
     // 3. Send the email:
     const info = await transporter.sendMail(mailOptions);
 
-    console.log("Message sent: %s", info.messageId);
+    // console.log("Message sent: %s", info.messageId);
     return res.json(
       { success: true, messageId: info.messageId },
       { status: 200 }

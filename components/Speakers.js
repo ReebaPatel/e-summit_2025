@@ -1,5 +1,3 @@
-"use client";
-
 const Speakers = () => {
   const slides = [
     { name: "Mr. Arjun Deshpande", designation: "", image: "/arjun.jpg" },

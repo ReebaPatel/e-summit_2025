@@ -18,6 +18,7 @@ import * as tf from "@tensorflow/tfjs";
 import { storage } from "@/appwrite";
 import { ID } from "appwrite";
 import { useForm, Controller } from "react-hook-form";
+import Loader from "@/components/Loader";
 
 export default function RegistrationForm({ params }) {
   const eventId = React.use(params).id;
@@ -52,6 +53,7 @@ export default function RegistrationForm({ params }) {
   });
 
   const [model, setModel] = useState(null);
+  const [loading, setLoading] = useState(false);
   const [paymentScreenshot, setPaymentScreenshot] = useState(null);
   const [paymentVerificationResult, setPaymentVerificationResult] =
     useState("");
@@ -108,6 +110,7 @@ export default function RegistrationForm({ params }) {
   };
 
   const onSubmit = async (data) => {
+    setLoading(true);
     try {
       // Verify payment before submission
       if (
@@ -148,6 +151,7 @@ export default function RegistrationForm({ params }) {
         },
         body: JSON.stringify(registrationData),
       });
+      setLoading(false);
 
       if (response.ok) {
         alert("Registration Successful!");
@@ -172,12 +176,16 @@ export default function RegistrationForm({ params }) {
           alert("An email has been sent to your registered Email-ID!");
         } else {
           console.error("Email sending failed!");
+          alert(
+            "An error occurred while sending confirmation email! Kindly contact our help desk in degree foyer."
+          );
         }
       } else {
         alert("Registration Failed!");
       }
     } catch (error) {
       console.error(error);
+      setLoading(false);
     }
   };
 
@@ -188,6 +196,12 @@ export default function RegistrationForm({ params }) {
 
   const courseOptions = ["B.E", "BSc", "BBA", "Other"];
 
+  if (loading)
+    return (
+      <div className="flex justify-center items-center h-screen">
+        <Loader />
+      </div>
+    );
   return (
     <div className="w-full max-w-2xl mx-auto p-4">
       <motion.div
