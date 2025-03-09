@@ -1,9 +1,23 @@
 "use client";
 import React, { useState, useEffect } from "react";
-import { collection, getDocs, query, orderBy } from "firebase/firestore";
+import {
+  collection,
+  getDocs,
+  query,
+  orderBy,
+  doc,
+  updateDoc,
+  deleteDoc,
+} from "firebase/firestore";
 import { db } from "@/firebaseConfig";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+  CardFooter,
+} from "@/components/ui/card";
 import {
   Search,
   Calendar,
@@ -11,6 +25,10 @@ import {
   Clock,
   MapPin,
   ChevronDown,
+  Edit,
+  Trash2,
+  Eye,
+  X,
 } from "lucide-react";
 import {
   DropdownMenu,
@@ -18,6 +36,28 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogFooter,
+  DialogClose,
+} from "@/components/ui/dialog";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
 
 // Import the event details
 const eventDetails = {
@@ -67,7 +107,7 @@ const eventDetails = {
   },
   "reboot-and-revive": {
     id: "reboot-and-revive",
-    title: "Reboot Revive",
+    title: "Reboot & Revive",
     tagline: "Revive. Rebrand. Succeed.",
     venue: "2nd Floor Seminar Hall",
     date: "11th March",
@@ -81,7 +121,7 @@ const eventDetails = {
     title: "Innovex",
     tagline: "Turn Your Projects into Game-Changers!",
     venue: "Online (All Rounds)",
-    date: "9th March",
+    date: "17th March (Tentative)",
     time: "Full Day Event",
     teamSize: "2-4 Members",
     registrationFee: "₹250 per team",
@@ -124,6 +164,22 @@ const EventDashboard = () => {
     totalRevenue: 0,
   });
 
+  // States for CRUD operations
+  const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
+  const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
+  const [isViewDialogOpen, setIsViewDialogOpen] = useState(false);
+  const [currentRegistration, setCurrentRegistration] = useState(null);
+  const [currentEventId, setCurrentEventId] = useState("");
+  const [editFormData, setEditFormData] = useState({
+    name: "",
+    email: "",
+    mobile: "",
+    collegeName: "",
+    coTeamMember1: { name: "", email: "" },
+    coTeamMember2: { name: "", email: "" },
+    coTeamMember3: { name: "", email: "" },
+  });
+
   // Check screen size on component mount and resize
   useEffect(() => {
     const checkScreenSize = () => {
@@ -142,7 +198,6 @@ const EventDashboard = () => {
 
   useEffect(() => {
     const fetchAllRegistrations = async () => {
-      // Existing code unchanged
       setLoading(true);
       const allRegistrations = {};
       let totalParticipants = 0;
@@ -173,10 +228,17 @@ const EventDashboard = () => {
             event.registrationFee.replace(/[^\d]/g, "")
           );
 
-          // Update total participants based on team size
+          // Update total participants based on team members
           eventData.forEach((reg) => {
-            const teamSize = reg.teamMembers ? reg.teamMembers.length : 1;
-            totalParticipants += teamSize;
+            // Count the team leader
+            let memberCount = 1;
+
+            // Count additional team members (coTeamMember1, coTeamMember2, coTeamMember3)
+            if (reg.coTeamMember1 && reg.coTeamMember1.name) memberCount++;
+            if (reg.coTeamMember2 && reg.coTeamMember2.name) memberCount++;
+            if (reg.coTeamMember3 && reg.coTeamMember3.name) memberCount++;
+
+            totalParticipants += memberCount;
           });
 
           // Update revenue
@@ -200,7 +262,7 @@ const EventDashboard = () => {
     fetchAllRegistrations();
   }, []);
 
-  // All other functions remain the same
+  // Filter registrations based on search term and selected event
   const filteredRegistrations = Object.entries(registrations).reduce(
     (acc, [eventId, eventRegs]) => {
       if (currentEvent !== "all" && currentEvent !== eventId) {
@@ -208,10 +270,29 @@ const EventDashboard = () => {
       }
 
       const filtered = eventRegs.filter((reg) => {
-        const searchString = `${reg.name || ""} ${reg.email || ""} ${
-          reg.phoneNumber || ""
-        } ${reg.college || ""}`.toLowerCase();
-        return searchString.includes(searchTerm.toLowerCase());
+        // Include team members in search
+        let searchString = `${reg.name || ""} ${reg.email || ""} ${
+          reg.mobile || ""
+        } ${reg.collegeName || ""}`.toLowerCase();
+
+        // Add team members to search string
+        if (reg.coTeamMember1 && reg.coTeamMember1.name) {
+          searchString += ` ${reg.coTeamMember1.name} ${
+            reg.coTeamMember1.email || ""
+          }`;
+        }
+        if (reg.coTeamMember2 && reg.coTeamMember2.name) {
+          searchString += ` ${reg.coTeamMember2.name} ${
+            reg.coTeamMember2.email || ""
+          }`;
+        }
+        if (reg.coTeamMember3 && reg.coTeamMember3.name) {
+          searchString += ` ${reg.coTeamMember3.name} ${
+            reg.coTeamMember3.email || ""
+          }`;
+        }
+
+        return searchString.toLowerCase().includes(searchTerm.toLowerCase());
       });
 
       if (filtered.length > 0) {
@@ -227,6 +308,149 @@ const EventDashboard = () => {
     if (!isoString) return "N/A";
     const date = new Date(isoString);
     return date.toLocaleString();
+  };
+
+  // CRUD operations
+  const handleEdit = (registration, eventId) => {
+    setCurrentRegistration(registration);
+    setCurrentEventId(eventId);
+
+    setEditFormData({
+      name: registration.name || "",
+      email: registration.email || "",
+      mobile: registration.mobile || "",
+      collegeName: registration.collegeName || "",
+      coTeamMember1: registration.coTeamMember1 || { name: "", email: "" },
+      coTeamMember2: registration.coTeamMember2 || { name: "", email: "" },
+      coTeamMember3: registration.coTeamMember3 || { name: "", email: "" },
+    });
+
+    setIsEditDialogOpen(true);
+  };
+
+  const handleView = (registration, eventId) => {
+    setCurrentRegistration(registration);
+    setCurrentEventId(eventId);
+    setIsViewDialogOpen(true);
+  };
+
+  const handleDelete = (registration, eventId) => {
+    setCurrentRegistration(registration);
+    setCurrentEventId(eventId);
+    setIsDeleteDialogOpen(true);
+  };
+
+  const handleUpdateRegistration = async () => {
+    if (!currentRegistration || !currentEventId) return;
+
+    try {
+      const registrationRef = doc(db, currentEventId, currentRegistration.id);
+      await updateDoc(registrationRef, {
+        name: editFormData.name,
+        email: editFormData.email,
+        mobile: editFormData.mobile,
+        collegeName: editFormData.collegeName,
+        coTeamMember1: editFormData.coTeamMember1,
+        coTeamMember2: editFormData.coTeamMember2,
+        coTeamMember3: editFormData.coTeamMember3,
+      });
+
+      // Update local state
+      setRegistrations((prev) => {
+        const updated = { ...prev };
+        const index = updated[currentEventId].findIndex(
+          (r) => r.id === currentRegistration.id
+        );
+        if (index !== -1) {
+          updated[currentEventId][index] = {
+            ...updated[currentEventId][index],
+            ...editFormData,
+          };
+        }
+        return updated;
+      });
+
+      setIsEditDialogOpen(false);
+    } catch (error) {
+      console.error("Error updating registration:", error);
+      alert("Failed to update registration");
+    }
+  };
+
+  const handleDeleteRegistration = async () => {
+    if (!currentRegistration || !currentEventId) return;
+
+    try {
+      const registrationRef = doc(db, currentEventId, currentRegistration.id);
+      await deleteDoc(registrationRef);
+
+      // Update local state
+      setRegistrations((prev) => {
+        const updated = { ...prev };
+        updated[currentEventId] = updated[currentEventId].filter(
+          (r) => r.id !== currentRegistration.id
+        );
+        return updated;
+      });
+
+      // Update stats
+      setStats((prev) => {
+        let memberCount = 1; // Team leader
+        if (
+          currentRegistration.coTeamMember1 &&
+          currentRegistration.coTeamMember1.name
+        )
+          memberCount++;
+        if (
+          currentRegistration.coTeamMember2 &&
+          currentRegistration.coTeamMember2.name
+        )
+          memberCount++;
+        if (
+          currentRegistration.coTeamMember3 &&
+          currentRegistration.coTeamMember3.name
+        )
+          memberCount++;
+
+        const feePerTeam = parseInt(
+          eventDetails[currentEventId].registrationFee.replace(/[^\d]/g, "")
+        );
+
+        return {
+          totalRegistrations: prev.totalRegistrations - 1,
+          registrationsByEvent: {
+            ...prev.registrationsByEvent,
+            [currentEventId]:
+              (prev.registrationsByEvent[currentEventId] || 0) - 1,
+          },
+          totalParticipants: prev.totalParticipants - memberCount,
+          totalRevenue: prev.totalRevenue - feePerTeam,
+        };
+      });
+
+      setIsDeleteDialogOpen(false);
+    } catch (error) {
+      console.error("Error deleting registration:", error);
+      alert("Failed to delete registration");
+    }
+  };
+
+  // Handle form field changes
+  const handleInputChange = (field, value) => {
+    setEditFormData((prev) => ({
+      ...prev,
+      [field]: value,
+    }));
+  };
+
+  const handleTeamMemberChange = (memberField, field, value) => {
+    setEditFormData((prev) => ({
+      ...prev,
+      [memberField]: {
+        ...prev[memberField],
+        [field]: value,
+      },
+    }));
   };
 
   // Create a responsive TabsList component
@@ -279,10 +503,18 @@ const EventDashboard = () => {
     }
   };
 
-  // Registration breakdown by event
+  // Registration card component with CRUD buttons
   const RegistrationCard = ({ registration, eventId }) => {
     const event = eventDetails[eventId];
     if (!event) return null;
+
+    // Count team members
+    const teamMembersCount =
+      [
+        registration.coTeamMember1?.name,
+        registration.coTeamMember2?.name,
+        registration.coTeamMember3?.name,
+      ].filter(Boolean).length + 1; // +1 for team leader
 
     return (
       <Card
@@ -297,6 +529,10 @@ const EventDashboard = () => {
           <div className="flex justify-between items-center">
             <CardTitle className="text-lg font-medium">
               {registration.name || "No Name"}
+              <span className="ml-2 text-sm font-normal">
+                ({teamMembersCount}{" "}
+                {teamMembersCount === 1 ? "member" : "members"})
+              </span>
             </CardTitle>
             <span className="text-sm opacity-75">
               {formatDate(registration.timestamp)}
@@ -311,42 +547,57 @@ const EventDashboard = () => {
                 <strong>Email:</strong> {registration.email || "N/A"}
               </p>
               <p>
-                <strong>Phone:</strong> {registration.phoneNumber || "N/A"}
+                <strong>Phone:</strong> {registration.mobile || "N/A"}
               </p>
               <p>
-                <strong>College:</strong> {registration.college || "N/A"}
+                <strong>College:</strong> {registration.collegeName || "N/A"}
               </p>
             </div>
             <div>
-              <p className="text-sm text-gray-500">Event Information</p>
-              <p>
-                <strong>Event:</strong> {event.title}
-              </p>
-              {registration.teamMembers &&
-                registration.teamMembers.length > 0 && (
-                  <div>
-                    <p>
-                      <strong>Team Members:</strong>
-                    </p>
-                    <ul className="list-disc pl-5">
-                      {registration.teamMembers.map((member, idx) => (
-                        <li key={idx}>
-                          {member.name || "No Name"}{" "}
-                          {member.email ? `(${member.email})` : ""}
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
+              <p className="text-sm text-gray-500">Team Members</p>
+              <ul className="list-disc pl-5">
+                <li>
+                  <strong>{registration.name || "No Name"}</strong> (Team Lead)
+                </li>
+                {registration.coTeamMember1?.name && (
+                  <li>{registration.coTeamMember1.name}</li>
                 )}
+                {registration.coTeamMember2?.name && (
+                  <li>{registration.coTeamMember2.name}</li>
+                )}
+                {registration.coTeamMember3?.name && (
+                  <li>{registration.coTeamMember3.name}</li>
+                )}
+              </ul>
             </div>
-            {registration.additionalInfo && (
-              <div className="col-span-1 md:col-span-2">
-                <p className="text-sm text-gray-500">Additional Information</p>
-                <p>{registration.additionalInfo}</p>
-              </div>
-            )}
           </div>
         </CardContent>
+        <CardFooter className="flex justify-end gap-2 pt-0 pb-4">
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => handleView(registration, eventId)}
+            className="bg-white border-gray-300 hover:bg-gray-50"
+          >
+            <Eye className="h-4 w-4 mr-1 text-gray-600" /> View
+          </Button>
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => handleEdit(registration, eventId)}
+            className="bg-white border-gray-300 hover:bg-gray-50"
+          >
+            <Edit className="h-4 w-4 mr-1 text-gray-600" /> Edit
+          </Button>
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => handleDelete(registration, eventId)}
+            className="bg-white border-gray-300 hover:bg-gray-50 text-red-500 hover:text-red-700"
+          >
+            <Trash2 className="h-4 w-4 mr-1" /> Delete
+          </Button>
+        </CardFooter>
       </Card>
     );
   };
@@ -451,6 +702,319 @@ const EventDashboard = () => {
     </Card>
   );
 
+  // View Dialog Component
+  const ViewDialog = () => {
+    if (!currentRegistration || !currentEventId) return null;
+
+    const event = eventDetails[currentEventId];
+
+    return (
+      <Dialog open={isViewDialogOpen} onOpenChange={setIsViewDialogOpen}>
+        <DialogContent className="max-w-3xl max-h-[90vh] overflow-y-auto bg-white">
+          <DialogHeader>
+            <DialogTitle className="text-gray-800">
+              Registration Details - {event.title}
+            </DialogTitle>
+            <DialogClose className="absolute right-4 top-4 rounded-sm opacity-70 ring-offset-background transition-opacity hover:opacity-100 focus:outline-none">
+              <X className="h-5 w-5 text-gray-600" />
+              <span className="sr-only">Close</span>
+            </DialogClose>
+          </DialogHeader>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 py-4">
+            <div className="bg-white p-4 rounded-lg border border-gray-200">
+              <h3 className="text-lg font-medium mb-2 text-gray-800">
+                Team Leader
+              </h3>
+              <div className="space-y-2">
+                <div>
+                  <Label className="text-sm text-gray-600">Name</Label>
+                  <p className="font-medium text-gray-800">
+                    {currentRegistration.name || "N/A"}
+                  </p>
+                </div>
+                <div>
+                  <Label className="text-sm text-gray-600">Email</Label>
+                  <p className="text-gray-700">
+                    {currentRegistration.email || "N/A"}
+                  </p>
+                </div>
+                <div>
+                  <Label className="text-sm text-gray-600">Phone Number</Label>
+                  <p className="text-gray-700">
+                    {currentRegistration.mobile || "N/A"}
+                  </p>
+                </div>
+                <div>
+                  <Label className="text-sm text-gray-600">College</Label>
+                  <p className="text-gray-700">
+                    {currentRegistration.collegeName || "N/A"}
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            <div className="bg-white p-4 rounded-lg border border-gray-200">
+              <h3 className="text-lg font-medium mb-2 text-gray-800">
+                Team Members
+              </h3>
+              {currentRegistration.coTeamMember1?.name ? (
+                <div className="mb-4 p-2 border rounded bg-white">
+                  <p className="text-gray-800">
+                    <strong>Name:</strong>{" "}
+                    {currentRegistration.coTeamMember1.name}
+                  </p>
+                  <p className="text-gray-700">
+                    <strong>Phone:</strong>{" "}
+                    {currentRegistration.coTeamMember1.mobile || "N/A"}
+                  </p>
+                </div>
+              ) : (
+                <p className="text-gray-500">No first co-member</p>
+              )}
+              {currentRegistration.coTeamMember2?.name ? (
+                <div className="mb-4 p-2 border rounded bg-white">
+                  <p className="text-gray-800">
+                    <strong>Name:</strong>{" "}
+                    {currentRegistration.coTeamMember2.name}
+                  </p>
+                  <p className="text-gray-700">
+                    <strong>Phone:</strong>{" "}
+                    {currentRegistration.coTeamMember2.mobile || "N/A"}
+                  </p>
+                </div>
+              ) : (
+                <p className="text-gray-500">No second co-member</p>
+              )}
+              {currentRegistration.coTeamMember3?.name ? (
+                <div className="mb-4 p-2 border rounded bg-white">
+                  <p className="text-gray-800">
+                    <strong>Name:</strong>{" "}
+                    {currentRegistration.coTeamMember3.name}
+                  </p>
+                  <p className="text-gray-700">
+                    <strong>Phone:</strong>{" "}
+                    {currentRegistration.coTeamMember3.mobile || "N/A"}
+                  </p>
+                </div>
+              ) : (
+                <p className="text-gray-500">No third co-member</p>
+              )}
+            </div>
+          </div>
+
+          {currentRegistration.paymentScreenshot && (
+            <div className="mb-4 bg-white p-4 rounded-lg border border-gray-200">
+              <h3 className="text-lg font-medium mb-2 text-gray-800">
+                Payment Screenshot
+              </h3>
+              <div className="border rounded p-2 bg-white">
+                <a
+                  href={currentRegistration.paymentScreenshot}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-blue-600 hover:underline"
+                >
+                  View Payment Screenshot
+                </a>
+              </div>
+            </div>
+          )}
+
+          <div className="mb-4 bg-white p-4 rounded-lg border border-gray-200">
+            <h3 className="text-lg font-medium mb-2 text-gray-800">
+              Registration Metadata
+            </h3>
+            <div className="grid grid-cols-2 gap-2">
+              <div>
+                <Label className="text-sm text-gray-600">Timestamp</Label>
+                <p className="text-gray-700">
+                  {formatDate(currentRegistration.timestamp)}
+                </p>
+              </div>
+              <div>
+                <Label className="text-sm text-gray-600">Registration ID</Label>
+                <p className="text-sm text-gray-700">
+                  {currentRegistration.id}
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <DialogFooter>
+            <Button
+              variant="outline"
+              className="bg-white border-gray-300 text-gray-700 hover:bg-gray-50"
+              onClick={() => handleEdit(currentRegistration, currentEventId)}
+            >
+              <Edit className="h-4 w-4 mr-2" /> Edit Registration
+            </Button>
+            <DialogClose asChild>
+              <Button className="bg-gray-800 text-white hover:bg-gray-700">
+                Close
+              </Button>
+            </DialogClose>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+    );
+  };
+
+  // Add this Edit Dialog component just above the return statement in EventDashboard component
+  const EditDialog = () => {
+    if (!currentRegistration) return null;
+
+    return (
+      <Dialog open={isEditDialogOpen} onOpenChange={setIsEditDialogOpen}>
+        <DialogContent className="max-w-3xl max-h-[90vh] overflow-y-auto bg-white">
+          <DialogHeader>
+            <DialogTitle className="text-gray-800">
+              Edit Registration
+            </DialogTitle>
+            <DialogClose className="absolute right-4 top-4 rounded-sm opacity-70 ring-offset-background transition-opacity hover:opacity-100 focus:outline-none">
+              <X className="h-5 w-5 text-gray-600" />
+              <span className="sr-only">Close</span>
+            </DialogClose>
+          </DialogHeader>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            {/* Team Leader Section */}
+            <div className="space-y-4 bg-white p-4 rounded-lg border border-gray-200">
+              <h3 className="font-medium text-lg text-gray-800">
+                Team Leader Details
+              </h3>
+              <div className="space-y-2">
+                <div>
+                  <Label className="text-gray-600">Name</Label>
+                  <Input
+                    className="bg-white border-gray-300 text-gray-800"
+                    value={editFormData.name}
+                    onChange={(e) => handleInputChange("name", e.target.value)}
+                  />
+                </div>
+                <div>
+                  <Label className="text-gray-600">Email</Label>
+                  <Input
+                    type="email"
+                    className="bg-white border-gray-300 text-gray-800"
+                    value={editFormData.email}
+                    onChange={(e) => handleInputChange("email", e.target.value)}
+                  />
+                </div>
+                <div>
+                  <Label className="text-gray-600">Phone Number</Label>
+                  <Input
+                    type="tel"
+                    className="bg-white border-gray-300 text-gray-800"
+                    value={editFormData.mobile}
+                    onChange={(e) =>
+                      handleInputChange("mobile", e.target.value)
+                    }
+                  />
+                </div>
+                <div>
+                  <Label className="text-gray-600">College</Label>
+                  <Input
+                    className="bg-white border-gray-300 text-gray-800"
+                    value={editFormData.collegeName}
+                    onChange={(e) =>
+                      handleInputChange("collegeName", e.target.value)
+                    }
+                  />
+                </div>
+              </div>
+            </div>
+
+            {/* Team Members Section */}
+            <div className="space-y-4 bg-white p-4 rounded-lg border border-gray-200">
+              <h3 className="font-medium text-lg text-gray-800">
+                Team Members
+              </h3>
+              {["coTeamMember1", "coTeamMember2", "coTeamMember3"].map(
+                (member, index) => (
+                  <div
+                    key={member}
+                    className="space-y-2 border p-3 rounded bg-gray-50"
+                  >
+                    <h4 className="font-medium text-gray-700">
+                      Member {index + 1}
+                    </h4>
+                    <div>
+                      <Label className="text-gray-600">Name</Label>
+                      <Input
+                        className="bg-white border-gray-300 text-gray-800"
+                        value={editFormData[member].name}
+                        onChange={(e) =>
+                          handleTeamMemberChange(member, "name", e.target.value)
+                        }
+                      />
+                    </div>
+                    <div>
+                      <Label className="text-gray-600">Phone</Label>
+                      <Input
+                        type="tel"
+                        className="bg-white border-gray-300 text-gray-800"
+                        value={editFormData[member].mobile}
+                        onChange={(e) =>
+                          handleTeamMemberChange(
+                            member,
+                            "mobile",
+                            e.target.value
+                          )
+                        }
+                      />
+                    </div>
+                  </div>
+                )
+              )}
+            </div>
+          </div>
+
+          <DialogFooter>
+            <Button
+              className="bg-gray-800 text-white hover:bg-gray-700"
+              onClick={handleUpdateRegistration}
+            >
+              Save Changes
+            </Button>
+            <DialogClose asChild>
+              <Button
+                variant="outline"
+                className="border-gray-300 text-white hover:bg-gray-50"
+              >
+                Cancel
+              </Button>
+            </DialogClose>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+    );
+  };
+
+  // Add the Delete Confirmation Dialog
+  const DeleteDialog = () => (
+    <AlertDialog open={isDeleteDialogOpen} onOpenChange={setIsDeleteDialogOpen}>
+      <AlertDialogContent>
+        <AlertDialogHeader>
+          <AlertDialogTitle>Confirm Deletion</AlertDialogTitle>
+          <AlertDialogDescription>
+            Are you sure you want to delete this registration? This action
+            cannot be undone.
+          </AlertDialogDescription>
+        </AlertDialogHeader>
+        <AlertDialogFooter>
+          <AlertDialogCancel>Cancel</AlertDialogCancel>
+          <AlertDialogAction
+            className="bg-red-600 hover:bg-red-700"
+            onClick={handleDeleteRegistration}
+          >
+            Confirm Delete
+          </AlertDialogAction>
+        </AlertDialogFooter>
+      </AlertDialogContent>
+    </AlertDialog>
+  );
+
   return (
     <div className="container mx-auto px-4 py-8">
       <h1 className="text-3xl font-bold mb-6">Event Registration Dashboard</h1>
@@ -486,7 +1050,6 @@ const EventDashboard = () => {
             onValueChange={setCurrentEvent}
             className="mb-6"
           >
-            {/* Replace the existing TabsList with our responsive version */}
             <ResponsiveTabsList />
 
             <TabsContent value="all">
@@ -622,6 +1185,11 @@ const EventDashboard = () => {
               </TabsContent>
             ))}
           </Tabs>
+
+          {/* Add the dialogs at the end */}
+          <ViewDialog />
+          <EditDialog />
+          <DeleteDialog />
         </>
       )}
     </div>
