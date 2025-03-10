@@ -60,7 +60,7 @@ export default function RegistrationForm({ params }) {
   const [paymentVerificationLoading, setPaymentVerificationLoading] =
     useState(false);
 
-  const closedEvents = ["ipl-auction", "mun"];
+  const closedEvents = ["ipl-auction", "mun", "entrepreneurial-escape-room"];
 
   // Add this check before rendering the form
   if (closedEvents.includes(eventId)) {
