@@ -60,6 +60,27 @@ export default function RegistrationForm({ params }) {
   const [paymentVerificationLoading, setPaymentVerificationLoading] =
     useState(false);
 
+  const closedEvents = ["ipl-auction", "mun"];
+
+  // Add this check before rendering the form
+  if (closedEvents.includes(eventId)) {
+    return (
+      <div className="flex items-center justify-center min-h-screen mx-auto py-20 px-48">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="bg-[#0a0a0a] border border-gray-800 rounded-xl shadow-2xl p-8 text-center text-white"
+        >
+          <h2 className="text-3xl font-nova mb-4">Registrations Closed</h2>
+          <p className="text-gray-400">
+            Registration for {eventName} has officially closed. <br />
+            Thank you for your interest!
+          </p>
+        </motion.div>
+      </div>
+    );
+  }
+
   // Load TensorFlow model when the component mounts
   useEffect(() => {
     const loadModel = async () => {

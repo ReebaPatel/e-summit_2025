@@ -58,6 +58,7 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
+import * as XLSX from "xlsx";
 
 // Import the event details
 const eventDetails = {
@@ -166,6 +167,7 @@ const EventDashboard = () => {
 
   // States for CRUD operations
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
+  const [editTimeout, setEditTimeout] = useState(null);
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
   const [isViewDialogOpen, setIsViewDialogOpen] = useState(false);
   const [currentRegistration, setCurrentRegistration] = useState(null);
@@ -179,6 +181,50 @@ const EventDashboard = () => {
     coTeamMember2: { name: "", email: "" },
     coTeamMember3: { name: "", email: "" },
   });
+
+  const exportData = () => {
+    const currentRegistrations =
+      currentEvent === "all"
+        ? Object.values(registrations).flat()
+        : registrations[currentEvent] || [];
+
+    const data = currentRegistrations.map((reg) => {
+      if (currentEvent === "ipl-auction") {
+        return {
+          "Team Leader Name": reg.name,
+          "Team Leader Phone": reg.mobile,
+          "Team Members": [
+            reg.name,
+            ...(reg.coTeamMember1?.name ? [reg.coTeamMember1.name] : []),
+            ...(reg.coTeamMember2?.name ? [reg.coTeamMember2.name] : []),
+            ...(reg.coTeamMember3?.name ? [reg.coTeamMember3.name] : []),
+          ].join(", "),
+        };
+      }
+
+      // For other events, export all visible data
+      return {
+        Name: reg.name,
+        Email: reg.email,
+        Phone: reg.mobile,
+        College: reg.collegeName,
+        "Team Members": [
+          reg.name,
+          ...(reg.coTeamMember1?.name ? [reg.coTeamMember1.name] : []),
+          ...(reg.coTeamMember2?.name ? [reg.coTeamMember2.name] : []),
+          ...(reg.coTeamMember3?.name ? [reg.coTeamMember3.name] : []),
+        ].join(", "),
+        "Payment Screenshot": reg.paymentScreenshot || "N/A",
+        "Registration Date": formatDate(reg.timestamp),
+        Event: eventDetails[reg.eventId]?.title || "N/A",
+      };
+    });
+
+    const ws = XLSX.utils.json_to_sheet(data);
+    const wb = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, ws, "Registrations");
+    XLSX.writeFile(wb, `registrations_${new Date().toISOString()}.xlsx`);
+  };
 
   // Check screen size on component mount and resize
   useEffect(() => {
@@ -437,10 +483,18 @@ const EventDashboard = () => {
 
   // Handle form field changes
   const handleInputChange = (field, value) => {
-    setEditFormData((prev) => ({
-      ...prev,
-      [field]: value,
-    }));
+    // Clear any existing timeout
+    if (editTimeout) clearTimeout(editTimeout);
+
+    // Set new timeout
+    setEditTimeout(
+      setTimeout(() => {
+        setEditFormData((prev) => ({
+          ...prev,
+          [field]: value,
+        }));
+      }, 100)
+    ); // 100ms delay
   };
 
   const handleTeamMemberChange = (memberField, field, value) => {
@@ -888,7 +942,7 @@ const EventDashboard = () => {
                   <Label className="text-gray-600">Name</Label>
                   <Input
                     className="bg-white border-gray-300 text-gray-800"
-                    value={editFormData.name}
+                    defaultValue={editFormData.name}
                     onChange={(e) => handleInputChange("name", e.target.value)}
                   />
                 </div>
@@ -897,7 +951,7 @@ const EventDashboard = () => {
                   <Input
                     type="email"
                     className="bg-white border-gray-300 text-gray-800"
-                    value={editFormData.email}
+                    defaultValue={editFormData.email}
                     onChange={(e) => handleInputChange("email", e.target.value)}
                   />
                 </div>
@@ -906,7 +960,7 @@ const EventDashboard = () => {
                   <Input
                     type="tel"
                     className="bg-white border-gray-300 text-gray-800"
-                    value={editFormData.mobile}
+                    defaultValue={editFormData.mobile}
                     onChange={(e) =>
                       handleInputChange("mobile", e.target.value)
                     }
@@ -916,7 +970,7 @@ const EventDashboard = () => {
                   <Label className="text-gray-600">College</Label>
                   <Input
                     className="bg-white border-gray-300 text-gray-800"
-                    value={editFormData.collegeName}
+                    defaultValue={editFormData.collegeName}
                     onChange={(e) =>
                       handleInputChange("collegeName", e.target.value)
                     }
@@ -943,7 +997,7 @@ const EventDashboard = () => {
                       <Label className="text-gray-600">Name</Label>
                       <Input
                         className="bg-white border-gray-300 text-gray-800"
-                        value={editFormData[member].name}
+                        defaultValue={editFormData[member].name}
                         onChange={(e) =>
                           handleTeamMemberChange(member, "name", e.target.value)
                         }
@@ -954,7 +1008,7 @@ const EventDashboard = () => {
                       <Input
                         type="tel"
                         className="bg-white border-gray-300 text-gray-800"
-                        value={editFormData[member].mobile}
+                        defaultValue={editFormData[member].mobile}
                         onChange={(e) =>
                           handleTeamMemberChange(
                             member,
@@ -1043,6 +1097,12 @@ const EventDashboard = () => {
                 onChange={(e) => setSearchTerm(e.target.value)}
               />
             </div>
+            <Button
+              onClick={exportData}
+              className="bg-green-600 hover:bg-green-700 text-white whitespace-nowrap"
+            >
+              Export Data
+            </Button>
           </div>
 
           <Tabs
