@@ -64,6 +64,7 @@ export default function RegistrationForm({ params }) {
     "ipl-auction",
     "mun",
     "hack-a-business",
+    "entrepreneurial-escape-room",
     "brandVision",
     "reboot-and-revive",
     "deal-and-disrupt",
