@@ -68,6 +68,7 @@ export default function RegistrationForm({ params }) {
     "brandVision",
     "reboot-and-revive",
     "deal-and-disrupt",
+    "innovex"
   ];
 
   // Add this check before rendering the form
