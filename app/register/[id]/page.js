@@ -61,7 +61,6 @@ export default function RegistrationForm({ params }) {
     useState(false);
 
   const closedEvents = [
-    "ipl-auction",
     "mun",
     "hack-a-business",
     "entrepreneurial-escape-room",
