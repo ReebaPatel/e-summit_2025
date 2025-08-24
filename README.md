@@ -13,8 +13,6 @@
 **E-Summit 2025** is the official website and management dashboard for **FCRIT E-Cell**’s annual entrepreneurship summit.  
 The platform was built to showcase event information, handle registrations, and provide organizers with a **powerful admin dashboard** to manage participants and event logistics.  
 
-As **Tech Head of E-Cell**, I guided the development team, overseeing **tech stack selection, architecture, and workflow**, while the team executed the code, UI, and Firebase integration.  
-
 - **Main website:** public-facing event info, sponsors, speakers, and registration forms  
 - **Admin dashboard:** internal organizer panel to manage users, registrations, and event data  
 
