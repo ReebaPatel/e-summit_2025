@@ -19,7 +19,7 @@ The platform was built to showcase event information, handle registrations, and 
 **Live links:**  
 - Main site: [https://e-summit-2025-fcrit.vercel.app/](https://e-summit-2025-fcrit.vercel.app/)  
 - Admin dashboard: [https://e-summit-2025-fcrit.vercel.app/dashboard](https://e-summit-2025-fcrit.vercel.app/dashboard)  
-
+- Ecell Website: https://ecell.uapp.in/
 ---
 
 ## 🚀 Features  
